@@ -1,7 +1,4 @@
-import ply.lex as lex
-import re
 from enum import Enum
-from pathlib import Path
 from ply.lex import TOKEN
 
 class Token(Enum):
@@ -45,29 +42,3 @@ def t_SEPRATOR(t):
 
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
-
-    
-if __name__ == "__main__":
-    lexer = lex.lex()
-    # test_data_path = Path('../public_test_data')
-    # for file in test_data_path.iterdir():
-    #     content = file.read_text(encoding='utf-8')
-    #     print(content)
-    #     # Give the lexer some input
-    #     lexer.input(content)
-    #     # Tokenize
-    #     while True:
-    #         tok = lexer.token()
-    #         if not tok:
-    #             break      # No more input
-    #         print(tok)
-    #     print('finish')
-    # lexer.input("""
-    # (define foo)
-    # """)
-    # while True:
-    #     tok = lexer.token()
-    #     if not tok:
-    #         break      # No more input
-    #     print(tok)
-    # print('finish')
