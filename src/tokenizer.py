@@ -6,6 +6,8 @@ class Token(Enum):
     ID = r'[a-z]([a-z]|[0-9]|-)*'
     BOOL_VAL = r'\#t|\#f'
     SEPRATOR = r'\t|\n|\r|\s'
+    PRINT_NUM = r'print [0-9]+'
+    PRINT_BOOL = r'print (\#t|\#f)'
 
 class Reserved(Enum):
     MODULUS = 'mod'
@@ -24,11 +26,13 @@ literals = ['+', '-', '*', '/', '>', '<', '=', '(', ')']
 @TOKEN(Token.NUMBER.value)
 def t_NUMBER(t):
     t.type = Token.NUMBER.name
+    t.value = float(t.value)
     return t
 
 @TOKEN(Token.BOOL_VAL.value)
 def t_BOOL_VAL(t):
     t.type = Token.BOOL_VAL.name
+    t.value = True if t.value == '#t' else False
     return t
 
 @TOKEN(Token.ID.value)
