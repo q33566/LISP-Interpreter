@@ -14,8 +14,8 @@ Rule 4     stmts -> stmt
 Rule 5     stmt -> exp
 Rule 6     stmt -> def_stmt
 Rule 7     stmt -> print_stmt
-Rule 8     print_stmt -> ( PRINT_NUM ) exp
-Rule 9     print_stmt -> ( PRINT_BOOL ) exp
+Rule 8     print_stmt -> ( PRINT_NUM exp )
+Rule 9     print_stmt -> ( PRINT_BOOL exp )
 Rule 10    exps -> exp exps
 Rule 11    exps -> exp
 Rule 12    exp -> BOOL_VAL
@@ -36,7 +36,7 @@ Rule 26    num_op -> smaller
 Rule 27    num_op -> equal
 Rule 28    plus -> ( + exp exps )
 Rule 29    minus -> ( - exp exp )
-Rule 30    multiply -> ( * exp exp exps )
+Rule 30    multiply -> ( * exp exps )
 Rule 31    divide -> ( / exp exp )
 Rule 32    modulus -> ( MODULUS exp exp )
 Rule 33    greater -> ( > exp exp )
@@ -48,29 +48,25 @@ Rule 38    logical_op -> not_op
 Rule 39    and_op -> ( AND exp exps )
 Rule 40    or_op -> ( OR exp exps )
 Rule 41    not_op -> ( NOT exp )
-Rule 42    def_stmt -> ( DEFINE variable exp )
-Rule 43    variable -> ID
-Rule 44    fun_exp -> ( FUN fun_ids fun_body )
-Rule 45    fun_ids -> ( ids )
-Rule 46    ids -> ID ids
-Rule 47    ids -> empty
-Rule 48    fun_body -> exp
-Rule 49    params -> param params
-Rule 50    params -> empty
-Rule 51    fun_call -> fun_exp params
-Rule 52    fun_call -> fun_name params
-Rule 53    param -> exp
-Rule 54    last_exp -> exp
-Rule 55    fun_name -> ID
-Rule 56    if_exp -> ( IF test_exp then_exp else_exp )
-Rule 57    test_exp -> exp
-Rule 58    then_exp -> exp
-Rule 59    else_exp -> exp
+Rule 42    def_stmt -> ( DEFINE ID exp )
+Rule 43    fun_exp -> ( FUN fun_ids exp )
+Rule 44    fun_ids -> ( ids )
+Rule 45    ids -> ID ids
+Rule 46    ids -> empty
+Rule 47    last_exp -> exp
+Rule 48    fun_call -> fun_exp params
+Rule 49    fun_call -> fun_name params
+Rule 50    params -> param params
+Rule 51    params -> empty
+Rule 52    param -> exp
+Rule 53    variable -> ID
+Rule 54    fun_name -> ID
+Rule 55    if_exp -> ( IF exp exp exp )
 
 Terminals, with rules where they appear
 
-(                    : 8 9 28 29 30 31 32 33 34 35 39 40 41 42 44 45 56
-)                    : 8 9 28 29 30 31 32 33 34 35 39 40 41 42 44 45 56
+(                    : 8 9 28 29 30 31 32 33 34 35 39 40 41 42 43 44 55
+)                    : 8 9 28 29 30 31 32 33 34 35 39 40 41 42 43 44 55
 *                    : 30
 +                    : 28
 -                    : 29
@@ -81,9 +77,9 @@ Terminals, with rules where they appear
 AND                  : 39
 BOOL_VAL             : 12
 DEFINE               : 42
-FUN                  : 44
-ID                   : 43 46 55
-IF                   : 56
+FUN                  : 43
+ID                   : 42 45 53 54
+IF                   : 55
 MODULUS              : 32
 NOT                  : 41
 NUMBER               : 13
@@ -98,18 +94,16 @@ Nonterminals, with rules where they appear
 and_op               : 36
 def_stmt             : 6
 divide               : 23
-else_exp             : 56
-empty                : 47 50
+empty                : 46 51
 equal                : 27
-exp                  : 5 8 9 10 11 28 29 29 30 30 31 31 32 32 33 33 34 34 35 39 40 41 42 48 53 54 57 58 59
+exp                  : 5 8 9 10 11 28 29 29 30 31 31 32 32 33 33 34 34 35 39 40 41 42 43 47 52 55 55 55
 exps                 : 10 28 30 35 39 40
-fun_body             : 44
 fun_call             : 18
-fun_exp              : 17 51
-fun_ids              : 44
-fun_name             : 52
+fun_exp              : 17 48
+fun_ids              : 43
+fun_name             : 49
 greater              : 25
-ids                  : 45 46
+ids                  : 44 45
 if_exp               : 19
 last_exp             : 
 logical_op           : 16
@@ -119,17 +113,15 @@ multiply             : 22
 not_op               : 38
 num_op               : 15
 or_op                : 37
-param                : 49
-params               : 49 51 52
+param                : 50
+params               : 48 49 50
 plus                 : 20
 print_stmt           : 7
 program              : 0
 smaller              : 26
 stmt                 : 3 4
 stmts                : 2 3
-test_exp             : 56
-then_exp             : 56
-variable             : 14 42
+variable             : 14
 
 Parsing method: LALR
 
@@ -150,10 +142,10 @@ state 0
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (42) def_stmt -> . ( DEFINE variable exp )
-    (8) print_stmt -> . ( PRINT_NUM ) exp
-    (9) print_stmt -> . ( PRINT_BOOL ) exp
-    (43) variable -> . ID
+    (42) def_stmt -> . ( DEFINE ID exp )
+    (8) print_stmt -> . ( PRINT_NUM exp )
+    (9) print_stmt -> . ( PRINT_BOOL exp )
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -165,13 +157,13 @@ state 0
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -180,7 +172,7 @@ state 0
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
@@ -242,10 +234,10 @@ state 3
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (42) def_stmt -> . ( DEFINE variable exp )
-    (8) print_stmt -> . ( PRINT_NUM ) exp
-    (9) print_stmt -> . ( PRINT_BOOL ) exp
-    (43) variable -> . ID
+    (42) def_stmt -> . ( DEFINE ID exp )
+    (8) print_stmt -> . ( PRINT_NUM exp )
+    (9) print_stmt -> . ( PRINT_BOOL exp )
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -257,13 +249,13 @@ state 3
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -272,7 +264,7 @@ state 3
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     $end            reduce using rule 4 (stmts -> stmt .)
     BOOL_VAL        shift and go to state 7
@@ -400,10 +392,10 @@ state 11
 state 12
 
     (17) exp -> fun_exp .
-    (51) fun_call -> fun_exp . params
-    (49) params -> . param params
-    (50) params -> . empty
-    (53) param -> . exp
+    (48) fun_call -> fun_exp . params
+    (50) params -> . param params
+    (51) params -> . empty
+    (52) param -> . exp
     (1) empty -> .
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
@@ -413,7 +405,7 @@ state 12
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -425,13 +417,13 @@ state 12
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -440,7 +432,7 @@ state 12
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
   ! reduce/reduce conflict for BOOL_VAL resolved using rule 1 (empty -> .)
   ! reduce/reduce conflict for NUMBER resolved using rule 1 (empty -> .)
@@ -519,14 +511,14 @@ state 14
 
 state 15
 
-    (42) def_stmt -> ( . DEFINE variable exp )
-    (8) print_stmt -> ( . PRINT_NUM ) exp
-    (9) print_stmt -> ( . PRINT_BOOL ) exp
-    (44) fun_exp -> ( . FUN fun_ids fun_body )
-    (56) if_exp -> ( . IF test_exp then_exp else_exp )
+    (42) def_stmt -> ( . DEFINE ID exp )
+    (8) print_stmt -> ( . PRINT_NUM exp )
+    (9) print_stmt -> ( . PRINT_BOOL exp )
+    (43) fun_exp -> ( . FUN fun_ids exp )
+    (55) if_exp -> ( . IF exp exp exp )
     (28) plus -> ( . + exp exps )
     (29) minus -> ( . - exp exp )
-    (30) multiply -> ( . * exp exp exps )
+    (30) multiply -> ( . * exp exps )
     (31) divide -> ( . / exp exp )
     (32) modulus -> ( . MODULUS exp exp )
     (33) greater -> ( . > exp exp )
@@ -556,28 +548,28 @@ state 15
 
 state 16
 
-    (43) variable -> ID .
-    (55) fun_name -> ID .
+    (53) variable -> ID .
+    (54) fun_name -> ID .
 
-  ! reduce/reduce conflict for BOOL_VAL resolved using rule 43 (variable -> ID .)
-  ! reduce/reduce conflict for NUMBER resolved using rule 43 (variable -> ID .)
-  ! reduce/reduce conflict for ID resolved using rule 43 (variable -> ID .)
-  ! reduce/reduce conflict for ( resolved using rule 43 (variable -> ID .)
-  ! reduce/reduce conflict for $end resolved using rule 43 (variable -> ID .)
-  ! reduce/reduce conflict for ) resolved using rule 43 (variable -> ID .)
-    BOOL_VAL        reduce using rule 43 (variable -> ID .)
-    NUMBER          reduce using rule 43 (variable -> ID .)
-    (               reduce using rule 43 (variable -> ID .)
-    ID              reduce using rule 43 (variable -> ID .)
-    $end            reduce using rule 43 (variable -> ID .)
-    )               reduce using rule 43 (variable -> ID .)
+  ! reduce/reduce conflict for BOOL_VAL resolved using rule 53 (variable -> ID .)
+  ! reduce/reduce conflict for NUMBER resolved using rule 53 (variable -> ID .)
+  ! reduce/reduce conflict for ID resolved using rule 53 (variable -> ID .)
+  ! reduce/reduce conflict for ( resolved using rule 53 (variable -> ID .)
+  ! reduce/reduce conflict for $end resolved using rule 53 (variable -> ID .)
+  ! reduce/reduce conflict for ) resolved using rule 53 (variable -> ID .)
+    BOOL_VAL        reduce using rule 53 (variable -> ID .)
+    NUMBER          reduce using rule 53 (variable -> ID .)
+    (               reduce using rule 53 (variable -> ID .)
+    ID              reduce using rule 53 (variable -> ID .)
+    $end            reduce using rule 53 (variable -> ID .)
+    )               reduce using rule 53 (variable -> ID .)
 
-  ! BOOL_VAL        [ reduce using rule 55 (fun_name -> ID .) ]
-  ! NUMBER          [ reduce using rule 55 (fun_name -> ID .) ]
-  ! ID              [ reduce using rule 55 (fun_name -> ID .) ]
-  ! (               [ reduce using rule 55 (fun_name -> ID .) ]
-  ! $end            [ reduce using rule 55 (fun_name -> ID .) ]
-  ! )               [ reduce using rule 55 (fun_name -> ID .) ]
+  ! BOOL_VAL        [ reduce using rule 54 (fun_name -> ID .) ]
+  ! NUMBER          [ reduce using rule 54 (fun_name -> ID .) ]
+  ! ID              [ reduce using rule 54 (fun_name -> ID .) ]
+  ! (               [ reduce using rule 54 (fun_name -> ID .) ]
+  ! $end            [ reduce using rule 54 (fun_name -> ID .) ]
+  ! )               [ reduce using rule 54 (fun_name -> ID .) ]
 
 
 state 17
@@ -714,10 +706,10 @@ state 27
 
 state 28
 
-    (52) fun_call -> fun_name . params
-    (49) params -> . param params
-    (50) params -> . empty
-    (53) param -> . exp
+    (49) fun_call -> fun_name . params
+    (50) params -> . param params
+    (51) params -> . empty
+    (52) param -> . exp
     (1) empty -> .
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
@@ -727,7 +719,7 @@ state 28
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -739,13 +731,13 @@ state 28
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -754,7 +746,7 @@ state 28
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
   ! shift/reduce conflict for BOOL_VAL resolved as shift
   ! shift/reduce conflict for NUMBER resolved as shift
@@ -804,22 +796,22 @@ state 29
 
 state 30
 
-    (51) fun_call -> fun_exp params .
+    (48) fun_call -> fun_exp params .
 
-    BOOL_VAL        reduce using rule 51 (fun_call -> fun_exp params .)
-    NUMBER          reduce using rule 51 (fun_call -> fun_exp params .)
-    (               reduce using rule 51 (fun_call -> fun_exp params .)
-    ID              reduce using rule 51 (fun_call -> fun_exp params .)
-    $end            reduce using rule 51 (fun_call -> fun_exp params .)
-    )               reduce using rule 51 (fun_call -> fun_exp params .)
+    BOOL_VAL        reduce using rule 48 (fun_call -> fun_exp params .)
+    NUMBER          reduce using rule 48 (fun_call -> fun_exp params .)
+    (               reduce using rule 48 (fun_call -> fun_exp params .)
+    ID              reduce using rule 48 (fun_call -> fun_exp params .)
+    $end            reduce using rule 48 (fun_call -> fun_exp params .)
+    )               reduce using rule 48 (fun_call -> fun_exp params .)
 
 
 state 31
 
-    (49) params -> param . params
-    (49) params -> . param params
-    (50) params -> . empty
-    (53) param -> . exp
+    (50) params -> param . params
+    (50) params -> . param params
+    (51) params -> . empty
+    (52) param -> . exp
     (1) empty -> .
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
@@ -829,7 +821,7 @@ state 31
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -841,13 +833,13 @@ state 31
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -856,7 +848,7 @@ state 31
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
   ! shift/reduce conflict for BOOL_VAL resolved as shift
   ! shift/reduce conflict for NUMBER resolved as shift
@@ -899,35 +891,35 @@ state 31
 
 state 32
 
-    (50) params -> empty .
+    (51) params -> empty .
 
-    BOOL_VAL        reduce using rule 50 (params -> empty .)
-    NUMBER          reduce using rule 50 (params -> empty .)
-    (               reduce using rule 50 (params -> empty .)
-    ID              reduce using rule 50 (params -> empty .)
-    $end            reduce using rule 50 (params -> empty .)
-    )               reduce using rule 50 (params -> empty .)
+    BOOL_VAL        reduce using rule 51 (params -> empty .)
+    NUMBER          reduce using rule 51 (params -> empty .)
+    (               reduce using rule 51 (params -> empty .)
+    ID              reduce using rule 51 (params -> empty .)
+    $end            reduce using rule 51 (params -> empty .)
+    )               reduce using rule 51 (params -> empty .)
 
 
 state 33
 
-    (53) param -> exp .
+    (52) param -> exp .
 
-    BOOL_VAL        reduce using rule 53 (param -> exp .)
-    NUMBER          reduce using rule 53 (param -> exp .)
-    (               reduce using rule 53 (param -> exp .)
-    ID              reduce using rule 53 (param -> exp .)
-    $end            reduce using rule 53 (param -> exp .)
-    )               reduce using rule 53 (param -> exp .)
+    BOOL_VAL        reduce using rule 52 (param -> exp .)
+    NUMBER          reduce using rule 52 (param -> exp .)
+    (               reduce using rule 52 (param -> exp .)
+    ID              reduce using rule 52 (param -> exp .)
+    $end            reduce using rule 52 (param -> exp .)
+    )               reduce using rule 52 (param -> exp .)
 
 
 state 34
 
-    (44) fun_exp -> ( . FUN fun_ids fun_body )
-    (56) if_exp -> ( . IF test_exp then_exp else_exp )
+    (43) fun_exp -> ( . FUN fun_ids exp )
+    (55) if_exp -> ( . IF exp exp exp )
     (28) plus -> ( . + exp exps )
     (29) minus -> ( . - exp exp )
-    (30) multiply -> ( . * exp exp exps )
+    (30) multiply -> ( . * exp exps )
     (31) divide -> ( . / exp exp )
     (32) modulus -> ( . MODULUS exp exp )
     (33) greater -> ( . > exp exp )
@@ -954,40 +946,14 @@ state 34
 
 state 35
 
-    (42) def_stmt -> ( DEFINE . variable exp )
-    (43) variable -> . ID
+    (42) def_stmt -> ( DEFINE . ID exp )
 
-    ID              shift and go to state 54
+    ID              shift and go to state 53
 
-    variable                       shift and go to state 53
 
 state 36
 
-    (8) print_stmt -> ( PRINT_NUM . ) exp
-
-    )               shift and go to state 55
-
-
-state 37
-
-    (9) print_stmt -> ( PRINT_BOOL . ) exp
-
-    )               shift and go to state 56
-
-
-state 38
-
-    (44) fun_exp -> ( FUN . fun_ids fun_body )
-    (45) fun_ids -> . ( ids )
-
-    (               shift and go to state 57
-
-    fun_ids                        shift and go to state 58
-
-state 39
-
-    (56) if_exp -> ( IF . test_exp then_exp else_exp )
-    (57) test_exp -> . exp
+    (8) print_stmt -> ( PRINT_NUM . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -996,7 +962,7 @@ state 39
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1008,13 +974,13 @@ state 39
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1023,15 +989,153 @@ state 39
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    test_exp                       shift and go to state 59
-    exp                            shift and go to state 60
+    exp                            shift and go to state 54
+    variable                       shift and go to state 9
+    num_op                         shift and go to state 10
+    logical_op                     shift and go to state 11
+    fun_exp                        shift and go to state 12
+    fun_call                       shift and go to state 13
+    if_exp                         shift and go to state 14
+    plus                           shift and go to state 17
+    minus                          shift and go to state 18
+    multiply                       shift and go to state 19
+    divide                         shift and go to state 20
+    modulus                        shift and go to state 21
+    greater                        shift and go to state 22
+    smaller                        shift and go to state 23
+    equal                          shift and go to state 24
+    and_op                         shift and go to state 25
+    or_op                          shift and go to state 26
+    not_op                         shift and go to state 27
+    fun_name                       shift and go to state 28
+
+state 37
+
+    (9) print_stmt -> ( PRINT_BOOL . exp )
+    (12) exp -> . BOOL_VAL
+    (13) exp -> . NUMBER
+    (14) exp -> . variable
+    (15) exp -> . num_op
+    (16) exp -> . logical_op
+    (17) exp -> . fun_exp
+    (18) exp -> . fun_call
+    (19) exp -> . if_exp
+    (53) variable -> . ID
+    (20) num_op -> . plus
+    (21) num_op -> . minus
+    (22) num_op -> . multiply
+    (23) num_op -> . divide
+    (24) num_op -> . modulus
+    (25) num_op -> . greater
+    (26) num_op -> . smaller
+    (27) num_op -> . equal
+    (36) logical_op -> . and_op
+    (37) logical_op -> . or_op
+    (38) logical_op -> . not_op
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
+    (28) plus -> . ( + exp exps )
+    (29) minus -> . ( - exp exp )
+    (30) multiply -> . ( * exp exps )
+    (31) divide -> . ( / exp exp )
+    (32) modulus -> . ( MODULUS exp exp )
+    (33) greater -> . ( > exp exp )
+    (34) smaller -> . ( < exp exp )
+    (35) equal -> . ( = exp exps )
+    (39) and_op -> . ( AND exp exps )
+    (40) or_op -> . ( OR exp exps )
+    (41) not_op -> . ( NOT exp )
+    (54) fun_name -> . ID
+
+    BOOL_VAL        shift and go to state 7
+    NUMBER          shift and go to state 8
+    ID              shift and go to state 16
+    (               shift and go to state 34
+
+    exp                            shift and go to state 55
+    variable                       shift and go to state 9
+    num_op                         shift and go to state 10
+    logical_op                     shift and go to state 11
+    fun_exp                        shift and go to state 12
+    fun_call                       shift and go to state 13
+    if_exp                         shift and go to state 14
+    plus                           shift and go to state 17
+    minus                          shift and go to state 18
+    multiply                       shift and go to state 19
+    divide                         shift and go to state 20
+    modulus                        shift and go to state 21
+    greater                        shift and go to state 22
+    smaller                        shift and go to state 23
+    equal                          shift and go to state 24
+    and_op                         shift and go to state 25
+    or_op                          shift and go to state 26
+    not_op                         shift and go to state 27
+    fun_name                       shift and go to state 28
+
+state 38
+
+    (43) fun_exp -> ( FUN . fun_ids exp )
+    (44) fun_ids -> . ( ids )
+
+    (               shift and go to state 56
+
+    fun_ids                        shift and go to state 57
+
+state 39
+
+    (55) if_exp -> ( IF . exp exp exp )
+    (12) exp -> . BOOL_VAL
+    (13) exp -> . NUMBER
+    (14) exp -> . variable
+    (15) exp -> . num_op
+    (16) exp -> . logical_op
+    (17) exp -> . fun_exp
+    (18) exp -> . fun_call
+    (19) exp -> . if_exp
+    (53) variable -> . ID
+    (20) num_op -> . plus
+    (21) num_op -> . minus
+    (22) num_op -> . multiply
+    (23) num_op -> . divide
+    (24) num_op -> . modulus
+    (25) num_op -> . greater
+    (26) num_op -> . smaller
+    (27) num_op -> . equal
+    (36) logical_op -> . and_op
+    (37) logical_op -> . or_op
+    (38) logical_op -> . not_op
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
+    (28) plus -> . ( + exp exps )
+    (29) minus -> . ( - exp exp )
+    (30) multiply -> . ( * exp exps )
+    (31) divide -> . ( / exp exp )
+    (32) modulus -> . ( MODULUS exp exp )
+    (33) greater -> . ( > exp exp )
+    (34) smaller -> . ( < exp exp )
+    (35) equal -> . ( = exp exps )
+    (39) and_op -> . ( AND exp exps )
+    (40) or_op -> . ( OR exp exps )
+    (41) not_op -> . ( NOT exp )
+    (54) fun_name -> . ID
+
+    BOOL_VAL        shift and go to state 7
+    NUMBER          shift and go to state 8
+    ID              shift and go to state 16
+    (               shift and go to state 34
+
+    exp                            shift and go to state 58
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1062,7 +1166,7 @@ state 40
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1074,13 +1178,13 @@ state 40
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1089,14 +1193,14 @@ state 40
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 61
+    exp                            shift and go to state 59
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1127,7 +1231,7 @@ state 41
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1139,13 +1243,13 @@ state 41
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1154,14 +1258,14 @@ state 41
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 62
+    exp                            shift and go to state 60
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1183,7 +1287,7 @@ state 41
 
 state 42
 
-    (30) multiply -> ( * . exp exp exps )
+    (30) multiply -> ( * . exp exps )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -1192,7 +1296,7 @@ state 42
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1204,13 +1308,13 @@ state 42
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1219,14 +1323,14 @@ state 42
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 63
+    exp                            shift and go to state 61
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1257,7 +1361,7 @@ state 43
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1269,13 +1373,13 @@ state 43
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1284,14 +1388,14 @@ state 43
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 64
+    exp                            shift and go to state 62
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1322,7 +1426,7 @@ state 44
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1334,13 +1438,13 @@ state 44
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1349,14 +1453,14 @@ state 44
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 65
+    exp                            shift and go to state 63
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1387,7 +1491,7 @@ state 45
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1399,13 +1503,13 @@ state 45
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1414,14 +1518,14 @@ state 45
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 66
+    exp                            shift and go to state 64
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1452,7 +1556,7 @@ state 46
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1464,13 +1568,13 @@ state 46
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1479,14 +1583,14 @@ state 46
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 67
+    exp                            shift and go to state 65
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1517,7 +1621,7 @@ state 47
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1529,13 +1633,13 @@ state 47
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1544,14 +1648,14 @@ state 47
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 68
+    exp                            shift and go to state 66
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1582,7 +1686,7 @@ state 48
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1594,13 +1698,13 @@ state 48
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1609,14 +1713,14 @@ state 48
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 69
+    exp                            shift and go to state 67
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1647,7 +1751,7 @@ state 49
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1659,13 +1763,13 @@ state 49
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1674,14 +1778,14 @@ state 49
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 70
+    exp                            shift and go to state 68
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1712,7 +1816,7 @@ state 50
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1724,13 +1828,13 @@ state 50
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1739,14 +1843,14 @@ state 50
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 71
+    exp                            shift and go to state 69
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1768,31 +1872,31 @@ state 50
 
 state 51
 
-    (52) fun_call -> fun_name params .
+    (49) fun_call -> fun_name params .
 
-    BOOL_VAL        reduce using rule 52 (fun_call -> fun_name params .)
-    NUMBER          reduce using rule 52 (fun_call -> fun_name params .)
-    (               reduce using rule 52 (fun_call -> fun_name params .)
-    ID              reduce using rule 52 (fun_call -> fun_name params .)
-    $end            reduce using rule 52 (fun_call -> fun_name params .)
-    )               reduce using rule 52 (fun_call -> fun_name params .)
+    BOOL_VAL        reduce using rule 49 (fun_call -> fun_name params .)
+    NUMBER          reduce using rule 49 (fun_call -> fun_name params .)
+    (               reduce using rule 49 (fun_call -> fun_name params .)
+    ID              reduce using rule 49 (fun_call -> fun_name params .)
+    $end            reduce using rule 49 (fun_call -> fun_name params .)
+    )               reduce using rule 49 (fun_call -> fun_name params .)
 
 
 state 52
 
-    (49) params -> param params .
+    (50) params -> param params .
 
-    BOOL_VAL        reduce using rule 49 (params -> param params .)
-    NUMBER          reduce using rule 49 (params -> param params .)
-    (               reduce using rule 49 (params -> param params .)
-    ID              reduce using rule 49 (params -> param params .)
-    $end            reduce using rule 49 (params -> param params .)
-    )               reduce using rule 49 (params -> param params .)
+    BOOL_VAL        reduce using rule 50 (params -> param params .)
+    NUMBER          reduce using rule 50 (params -> param params .)
+    (               reduce using rule 50 (params -> param params .)
+    ID              reduce using rule 50 (params -> param params .)
+    $end            reduce using rule 50 (params -> param params .)
+    )               reduce using rule 50 (params -> param params .)
 
 
 state 53
 
-    (42) def_stmt -> ( DEFINE variable . exp )
+    (42) def_stmt -> ( DEFINE ID . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -1801,7 +1905,7 @@ state 53
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1813,13 +1917,13 @@ state 53
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1828,15 +1932,15 @@ state 53
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
+    exp                            shift and go to state 70
     variable                       shift and go to state 9
-    exp                            shift and go to state 72
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
     fun_exp                        shift and go to state 12
@@ -1857,82 +1961,34 @@ state 53
 
 state 54
 
-    (43) variable -> ID .
+    (8) print_stmt -> ( PRINT_NUM exp . )
 
-    BOOL_VAL        reduce using rule 43 (variable -> ID .)
-    NUMBER          reduce using rule 43 (variable -> ID .)
-    ID              reduce using rule 43 (variable -> ID .)
-    (               reduce using rule 43 (variable -> ID .)
+    )               shift and go to state 71
 
 
 state 55
 
-    (8) print_stmt -> ( PRINT_NUM ) . exp
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (9) print_stmt -> ( PRINT_BOOL exp . )
 
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
+    )               shift and go to state 72
 
-    exp                            shift and go to state 73
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
 
 state 56
 
-    (9) print_stmt -> ( PRINT_BOOL ) . exp
+    (44) fun_ids -> ( . ids )
+    (45) ids -> . ID ids
+    (46) ids -> . empty
+    (1) empty -> .
+
+    ID              shift and go to state 74
+    )               reduce using rule 1 (empty -> .)
+
+    ids                            shift and go to state 73
+    empty                          shift and go to state 75
+
+state 57
+
+    (43) fun_exp -> ( FUN fun_ids . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -1941,7 +1997,7 @@ state 56
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -1953,13 +2009,13 @@ state 56
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -1968,14 +2024,14 @@ state 56
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 74
+    exp                            shift and go to state 76
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -1995,23 +2051,9 @@ state 56
     not_op                         shift and go to state 27
     fun_name                       shift and go to state 28
 
-state 57
-
-    (45) fun_ids -> ( . ids )
-    (46) ids -> . ID ids
-    (47) ids -> . empty
-    (1) empty -> .
-
-    ID              shift and go to state 76
-    )               reduce using rule 1 (empty -> .)
-
-    ids                            shift and go to state 75
-    empty                          shift and go to state 77
-
 state 58
 
-    (44) fun_exp -> ( FUN fun_ids . fun_body )
-    (48) fun_body -> . exp
+    (55) if_exp -> ( IF exp . exp exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2020,7 +2062,7 @@ state 58
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2032,13 +2074,13 @@ state 58
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2047,15 +2089,14 @@ state 58
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    fun_body                       shift and go to state 78
-    exp                            shift and go to state 79
+    exp                            shift and go to state 77
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2077,8 +2118,9 @@ state 58
 
 state 59
 
-    (56) if_exp -> ( IF test_exp . then_exp else_exp )
-    (58) then_exp -> . exp
+    (28) plus -> ( + exp . exps )
+    (10) exps -> . exp exps
+    (11) exps -> . exp
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2087,7 +2129,7 @@ state 59
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2099,13 +2141,13 @@ state 59
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2114,15 +2156,15 @@ state 59
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    then_exp                       shift and go to state 80
-    exp                            shift and go to state 81
+    exp                            shift and go to state 78
+    exps                           shift and go to state 79
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2144,19 +2186,7 @@ state 59
 
 state 60
 
-    (57) test_exp -> exp .
-
-    BOOL_VAL        reduce using rule 57 (test_exp -> exp .)
-    NUMBER          reduce using rule 57 (test_exp -> exp .)
-    ID              reduce using rule 57 (test_exp -> exp .)
-    (               reduce using rule 57 (test_exp -> exp .)
-
-
-state 61
-
-    (28) plus -> ( + exp . exps )
-    (10) exps -> . exp exps
-    (11) exps -> . exp
+    (29) minus -> ( - exp . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2165,7 +2195,7 @@ state 61
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2177,13 +2207,13 @@ state 61
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2192,15 +2222,82 @@ state 61
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 83
+    exp                            shift and go to state 80
+    variable                       shift and go to state 9
+    num_op                         shift and go to state 10
+    logical_op                     shift and go to state 11
+    fun_exp                        shift and go to state 12
+    fun_call                       shift and go to state 13
+    if_exp                         shift and go to state 14
+    plus                           shift and go to state 17
+    minus                          shift and go to state 18
+    multiply                       shift and go to state 19
+    divide                         shift and go to state 20
+    modulus                        shift and go to state 21
+    greater                        shift and go to state 22
+    smaller                        shift and go to state 23
+    equal                          shift and go to state 24
+    and_op                         shift and go to state 25
+    or_op                          shift and go to state 26
+    not_op                         shift and go to state 27
+    fun_name                       shift and go to state 28
+
+state 61
+
+    (30) multiply -> ( * exp . exps )
+    (10) exps -> . exp exps
+    (11) exps -> . exp
+    (12) exp -> . BOOL_VAL
+    (13) exp -> . NUMBER
+    (14) exp -> . variable
+    (15) exp -> . num_op
+    (16) exp -> . logical_op
+    (17) exp -> . fun_exp
+    (18) exp -> . fun_call
+    (19) exp -> . if_exp
+    (53) variable -> . ID
+    (20) num_op -> . plus
+    (21) num_op -> . minus
+    (22) num_op -> . multiply
+    (23) num_op -> . divide
+    (24) num_op -> . modulus
+    (25) num_op -> . greater
+    (26) num_op -> . smaller
+    (27) num_op -> . equal
+    (36) logical_op -> . and_op
+    (37) logical_op -> . or_op
+    (38) logical_op -> . not_op
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
+    (28) plus -> . ( + exp exps )
+    (29) minus -> . ( - exp exp )
+    (30) multiply -> . ( * exp exps )
+    (31) divide -> . ( / exp exp )
+    (32) modulus -> . ( MODULUS exp exp )
+    (33) greater -> . ( > exp exp )
+    (34) smaller -> . ( < exp exp )
+    (35) equal -> . ( = exp exps )
+    (39) and_op -> . ( AND exp exps )
+    (40) or_op -> . ( OR exp exps )
+    (41) not_op -> . ( NOT exp )
+    (54) fun_name -> . ID
+
+    BOOL_VAL        shift and go to state 7
+    NUMBER          shift and go to state 8
+    ID              shift and go to state 16
+    (               shift and go to state 34
+
+    exp                            shift and go to state 78
+    exps                           shift and go to state 81
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2222,7 +2319,7 @@ state 61
 
 state 62
 
-    (29) minus -> ( - exp . exp )
+    (31) divide -> ( / exp . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2231,7 +2328,7 @@ state 62
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2243,13 +2340,13 @@ state 62
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2258,7 +2355,137 @@ state 62
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
+
+    BOOL_VAL        shift and go to state 7
+    NUMBER          shift and go to state 8
+    ID              shift and go to state 16
+    (               shift and go to state 34
+
+    exp                            shift and go to state 82
+    variable                       shift and go to state 9
+    num_op                         shift and go to state 10
+    logical_op                     shift and go to state 11
+    fun_exp                        shift and go to state 12
+    fun_call                       shift and go to state 13
+    if_exp                         shift and go to state 14
+    plus                           shift and go to state 17
+    minus                          shift and go to state 18
+    multiply                       shift and go to state 19
+    divide                         shift and go to state 20
+    modulus                        shift and go to state 21
+    greater                        shift and go to state 22
+    smaller                        shift and go to state 23
+    equal                          shift and go to state 24
+    and_op                         shift and go to state 25
+    or_op                          shift and go to state 26
+    not_op                         shift and go to state 27
+    fun_name                       shift and go to state 28
+
+state 63
+
+    (32) modulus -> ( MODULUS exp . exp )
+    (12) exp -> . BOOL_VAL
+    (13) exp -> . NUMBER
+    (14) exp -> . variable
+    (15) exp -> . num_op
+    (16) exp -> . logical_op
+    (17) exp -> . fun_exp
+    (18) exp -> . fun_call
+    (19) exp -> . if_exp
+    (53) variable -> . ID
+    (20) num_op -> . plus
+    (21) num_op -> . minus
+    (22) num_op -> . multiply
+    (23) num_op -> . divide
+    (24) num_op -> . modulus
+    (25) num_op -> . greater
+    (26) num_op -> . smaller
+    (27) num_op -> . equal
+    (36) logical_op -> . and_op
+    (37) logical_op -> . or_op
+    (38) logical_op -> . not_op
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
+    (28) plus -> . ( + exp exps )
+    (29) minus -> . ( - exp exp )
+    (30) multiply -> . ( * exp exps )
+    (31) divide -> . ( / exp exp )
+    (32) modulus -> . ( MODULUS exp exp )
+    (33) greater -> . ( > exp exp )
+    (34) smaller -> . ( < exp exp )
+    (35) equal -> . ( = exp exps )
+    (39) and_op -> . ( AND exp exps )
+    (40) or_op -> . ( OR exp exps )
+    (41) not_op -> . ( NOT exp )
+    (54) fun_name -> . ID
+
+    BOOL_VAL        shift and go to state 7
+    NUMBER          shift and go to state 8
+    ID              shift and go to state 16
+    (               shift and go to state 34
+
+    exp                            shift and go to state 83
+    variable                       shift and go to state 9
+    num_op                         shift and go to state 10
+    logical_op                     shift and go to state 11
+    fun_exp                        shift and go to state 12
+    fun_call                       shift and go to state 13
+    if_exp                         shift and go to state 14
+    plus                           shift and go to state 17
+    minus                          shift and go to state 18
+    multiply                       shift and go to state 19
+    divide                         shift and go to state 20
+    modulus                        shift and go to state 21
+    greater                        shift and go to state 22
+    smaller                        shift and go to state 23
+    equal                          shift and go to state 24
+    and_op                         shift and go to state 25
+    or_op                          shift and go to state 26
+    not_op                         shift and go to state 27
+    fun_name                       shift and go to state 28
+
+state 64
+
+    (33) greater -> ( > exp . exp )
+    (12) exp -> . BOOL_VAL
+    (13) exp -> . NUMBER
+    (14) exp -> . variable
+    (15) exp -> . num_op
+    (16) exp -> . logical_op
+    (17) exp -> . fun_exp
+    (18) exp -> . fun_call
+    (19) exp -> . if_exp
+    (53) variable -> . ID
+    (20) num_op -> . plus
+    (21) num_op -> . minus
+    (22) num_op -> . multiply
+    (23) num_op -> . divide
+    (24) num_op -> . modulus
+    (25) num_op -> . greater
+    (26) num_op -> . smaller
+    (27) num_op -> . equal
+    (36) logical_op -> . and_op
+    (37) logical_op -> . or_op
+    (38) logical_op -> . not_op
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
+    (28) plus -> . ( + exp exps )
+    (29) minus -> . ( - exp exp )
+    (30) multiply -> . ( * exp exps )
+    (31) divide -> . ( / exp exp )
+    (32) modulus -> . ( MODULUS exp exp )
+    (33) greater -> . ( > exp exp )
+    (34) smaller -> . ( < exp exp )
+    (35) equal -> . ( = exp exps )
+    (39) and_op -> . ( AND exp exps )
+    (40) or_op -> . ( OR exp exps )
+    (41) not_op -> . ( NOT exp )
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
@@ -2285,9 +2512,9 @@ state 62
     not_op                         shift and go to state 27
     fun_name                       shift and go to state 28
 
-state 63
+state 65
 
-    (30) multiply -> ( * exp . exp exps )
+    (34) smaller -> ( < exp . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2296,7 +2523,7 @@ state 63
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2308,13 +2535,13 @@ state 63
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2323,7 +2550,7 @@ state 63
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
@@ -2350,139 +2577,11 @@ state 63
     not_op                         shift and go to state 27
     fun_name                       shift and go to state 28
 
-state 64
-
-    (31) divide -> ( / exp . exp )
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
-
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
-
-    exp                            shift and go to state 86
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
-
-state 65
-
-    (32) modulus -> ( MODULUS exp . exp )
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
-
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
-
-    exp                            shift and go to state 87
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
-
 state 66
 
-    (33) greater -> ( > exp . exp )
+    (35) equal -> ( = exp . exps )
+    (10) exps -> . exp exps
+    (11) exps -> . exp
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2491,7 +2590,7 @@ state 66
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2503,13 +2602,13 @@ state 66
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2518,14 +2617,15 @@ state 66
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 88
+    exp                            shift and go to state 78
+    exps                           shift and go to state 86
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2547,7 +2647,9 @@ state 66
 
 state 67
 
-    (34) smaller -> ( < exp . exp )
+    (39) and_op -> ( AND exp . exps )
+    (10) exps -> . exp exps
+    (11) exps -> . exp
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2556,7 +2658,7 @@ state 67
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2568,13 +2670,13 @@ state 67
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2583,14 +2685,15 @@ state 67
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 89
+    exp                            shift and go to state 78
+    exps                           shift and go to state 87
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2612,7 +2715,7 @@ state 67
 
 state 68
 
-    (35) equal -> ( = exp . exps )
+    (40) or_op -> ( OR exp . exps )
     (10) exps -> . exp exps
     (11) exps -> . exp
     (12) exp -> . BOOL_VAL
@@ -2623,7 +2726,7 @@ state 68
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2635,13 +2738,13 @@ state 68
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2650,15 +2753,15 @@ state 68
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 90
+    exp                            shift and go to state 78
+    exps                           shift and go to state 88
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2680,221 +2783,77 @@ state 68
 
 state 69
 
-    (39) and_op -> ( AND exp . exps )
-    (10) exps -> . exp exps
-    (11) exps -> . exp
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (41) not_op -> ( NOT exp . )
 
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
+    )               shift and go to state 89
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 91
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
 
 state 70
 
-    (40) or_op -> ( OR exp . exps )
-    (10) exps -> . exp exps
-    (11) exps -> . exp
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (42) def_stmt -> ( DEFINE ID exp . )
 
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
+    )               shift and go to state 90
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 92
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
 
 state 71
 
-    (41) not_op -> ( NOT exp . )
+    (8) print_stmt -> ( PRINT_NUM exp ) .
 
-    )               shift and go to state 93
+    BOOL_VAL        reduce using rule 8 (print_stmt -> ( PRINT_NUM exp ) .)
+    NUMBER          reduce using rule 8 (print_stmt -> ( PRINT_NUM exp ) .)
+    (               reduce using rule 8 (print_stmt -> ( PRINT_NUM exp ) .)
+    ID              reduce using rule 8 (print_stmt -> ( PRINT_NUM exp ) .)
+    $end            reduce using rule 8 (print_stmt -> ( PRINT_NUM exp ) .)
 
 
 state 72
 
-    (42) def_stmt -> ( DEFINE variable exp . )
+    (9) print_stmt -> ( PRINT_BOOL exp ) .
 
-    )               shift and go to state 94
+    BOOL_VAL        reduce using rule 9 (print_stmt -> ( PRINT_BOOL exp ) .)
+    NUMBER          reduce using rule 9 (print_stmt -> ( PRINT_BOOL exp ) .)
+    (               reduce using rule 9 (print_stmt -> ( PRINT_BOOL exp ) .)
+    ID              reduce using rule 9 (print_stmt -> ( PRINT_BOOL exp ) .)
+    $end            reduce using rule 9 (print_stmt -> ( PRINT_BOOL exp ) .)
 
 
 state 73
 
-    (8) print_stmt -> ( PRINT_NUM ) exp .
+    (44) fun_ids -> ( ids . )
 
-    BOOL_VAL        reduce using rule 8 (print_stmt -> ( PRINT_NUM ) exp .)
-    NUMBER          reduce using rule 8 (print_stmt -> ( PRINT_NUM ) exp .)
-    (               reduce using rule 8 (print_stmt -> ( PRINT_NUM ) exp .)
-    ID              reduce using rule 8 (print_stmt -> ( PRINT_NUM ) exp .)
-    $end            reduce using rule 8 (print_stmt -> ( PRINT_NUM ) exp .)
+    )               shift and go to state 91
 
 
 state 74
 
-    (9) print_stmt -> ( PRINT_BOOL ) exp .
+    (45) ids -> ID . ids
+    (45) ids -> . ID ids
+    (46) ids -> . empty
+    (1) empty -> .
 
-    BOOL_VAL        reduce using rule 9 (print_stmt -> ( PRINT_BOOL ) exp .)
-    NUMBER          reduce using rule 9 (print_stmt -> ( PRINT_BOOL ) exp .)
-    (               reduce using rule 9 (print_stmt -> ( PRINT_BOOL ) exp .)
-    ID              reduce using rule 9 (print_stmt -> ( PRINT_BOOL ) exp .)
-    $end            reduce using rule 9 (print_stmt -> ( PRINT_BOOL ) exp .)
+    ID              shift and go to state 74
+    )               reduce using rule 1 (empty -> .)
 
+    ids                            shift and go to state 92
+    empty                          shift and go to state 75
 
 state 75
 
-    (45) fun_ids -> ( ids . )
+    (46) ids -> empty .
 
-    )               shift and go to state 95
+    )               reduce using rule 46 (ids -> empty .)
 
 
 state 76
 
-    (46) ids -> ID . ids
-    (46) ids -> . ID ids
-    (47) ids -> . empty
-    (1) empty -> .
+    (43) fun_exp -> ( FUN fun_ids exp . )
 
-    ID              shift and go to state 76
-    )               reduce using rule 1 (empty -> .)
+    )               shift and go to state 93
 
-    ids                            shift and go to state 96
-    empty                          shift and go to state 77
 
 state 77
 
-    (47) ids -> empty .
-
-    )               reduce using rule 47 (ids -> empty .)
-
-
-state 78
-
-    (44) fun_exp -> ( FUN fun_ids fun_body . )
-
-    )               shift and go to state 97
-
-
-state 79
-
-    (48) fun_body -> exp .
-
-    )               reduce using rule 48 (fun_body -> exp .)
-
-
-state 80
-
-    (56) if_exp -> ( IF test_exp then_exp . else_exp )
-    (59) else_exp -> . exp
+    (55) if_exp -> ( IF exp exp . exp )
     (12) exp -> . BOOL_VAL
     (13) exp -> . NUMBER
     (14) exp -> . variable
@@ -2903,7 +2862,7 @@ state 80
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2915,13 +2874,13 @@ state 80
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -2930,15 +2889,14 @@ state 80
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     BOOL_VAL        shift and go to state 7
     NUMBER          shift and go to state 8
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    else_exp                       shift and go to state 98
-    exp                            shift and go to state 99
+    exp                            shift and go to state 94
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -2958,17 +2916,7 @@ state 80
     not_op                         shift and go to state 27
     fun_name                       shift and go to state 28
 
-state 81
-
-    (58) then_exp -> exp .
-
-    BOOL_VAL        reduce using rule 58 (then_exp -> exp .)
-    NUMBER          reduce using rule 58 (then_exp -> exp .)
-    ID              reduce using rule 58 (then_exp -> exp .)
-    (               reduce using rule 58 (then_exp -> exp .)
-
-
-state 82
+state 78
 
     (10) exps -> exp . exps
     (11) exps -> exp .
@@ -2982,7 +2930,7 @@ state 82
     (17) exp -> . fun_exp
     (18) exp -> . fun_call
     (19) exp -> . if_exp
-    (43) variable -> . ID
+    (53) variable -> . ID
     (20) num_op -> . plus
     (21) num_op -> . minus
     (22) num_op -> . multiply
@@ -2994,13 +2942,13 @@ state 82
     (36) logical_op -> . and_op
     (37) logical_op -> . or_op
     (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
+    (43) fun_exp -> . ( FUN fun_ids exp )
+    (48) fun_call -> . fun_exp params
+    (49) fun_call -> . fun_name params
+    (55) if_exp -> . ( IF exp exp exp )
     (28) plus -> . ( + exp exps )
     (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
+    (30) multiply -> . ( * exp exps )
     (31) divide -> . ( / exp exp )
     (32) modulus -> . ( MODULUS exp exp )
     (33) greater -> . ( > exp exp )
@@ -3009,7 +2957,7 @@ state 82
     (39) and_op -> . ( AND exp exps )
     (40) or_op -> . ( OR exp exps )
     (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (54) fun_name -> . ID
 
     )               reduce using rule 11 (exps -> exp .)
     BOOL_VAL        shift and go to state 7
@@ -3017,8 +2965,8 @@ state 82
     ID              shift and go to state 16
     (               shift and go to state 34
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 100
+    exp                            shift and go to state 78
+    exps                           shift and go to state 95
     variable                       shift and go to state 9
     num_op                         shift and go to state 10
     logical_op                     shift and go to state 11
@@ -3038,138 +2986,77 @@ state 82
     not_op                         shift and go to state 27
     fun_name                       shift and go to state 28
 
-state 83
+state 79
 
     (28) plus -> ( + exp exps . )
 
-    )               shift and go to state 101
+    )               shift and go to state 96
+
+
+state 80
+
+    (29) minus -> ( - exp exp . )
+
+    )               shift and go to state 97
+
+
+state 81
+
+    (30) multiply -> ( * exp exps . )
+
+    )               shift and go to state 98
+
+
+state 82
+
+    (31) divide -> ( / exp exp . )
+
+    )               shift and go to state 99
+
+
+state 83
+
+    (32) modulus -> ( MODULUS exp exp . )
+
+    )               shift and go to state 100
 
 
 state 84
 
-    (29) minus -> ( - exp exp . )
+    (33) greater -> ( > exp exp . )
 
-    )               shift and go to state 102
+    )               shift and go to state 101
 
 
 state 85
 
-    (30) multiply -> ( * exp exp . exps )
-    (10) exps -> . exp exps
-    (11) exps -> . exp
-    (12) exp -> . BOOL_VAL
-    (13) exp -> . NUMBER
-    (14) exp -> . variable
-    (15) exp -> . num_op
-    (16) exp -> . logical_op
-    (17) exp -> . fun_exp
-    (18) exp -> . fun_call
-    (19) exp -> . if_exp
-    (43) variable -> . ID
-    (20) num_op -> . plus
-    (21) num_op -> . minus
-    (22) num_op -> . multiply
-    (23) num_op -> . divide
-    (24) num_op -> . modulus
-    (25) num_op -> . greater
-    (26) num_op -> . smaller
-    (27) num_op -> . equal
-    (36) logical_op -> . and_op
-    (37) logical_op -> . or_op
-    (38) logical_op -> . not_op
-    (44) fun_exp -> . ( FUN fun_ids fun_body )
-    (51) fun_call -> . fun_exp params
-    (52) fun_call -> . fun_name params
-    (56) if_exp -> . ( IF test_exp then_exp else_exp )
-    (28) plus -> . ( + exp exps )
-    (29) minus -> . ( - exp exp )
-    (30) multiply -> . ( * exp exp exps )
-    (31) divide -> . ( / exp exp )
-    (32) modulus -> . ( MODULUS exp exp )
-    (33) greater -> . ( > exp exp )
-    (34) smaller -> . ( < exp exp )
-    (35) equal -> . ( = exp exps )
-    (39) and_op -> . ( AND exp exps )
-    (40) or_op -> . ( OR exp exps )
-    (41) not_op -> . ( NOT exp )
-    (55) fun_name -> . ID
+    (34) smaller -> ( < exp exp . )
 
-    BOOL_VAL        shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 16
-    (               shift and go to state 34
+    )               shift and go to state 102
 
-    exp                            shift and go to state 82
-    exps                           shift and go to state 103
-    variable                       shift and go to state 9
-    num_op                         shift and go to state 10
-    logical_op                     shift and go to state 11
-    fun_exp                        shift and go to state 12
-    fun_call                       shift and go to state 13
-    if_exp                         shift and go to state 14
-    plus                           shift and go to state 17
-    minus                          shift and go to state 18
-    multiply                       shift and go to state 19
-    divide                         shift and go to state 20
-    modulus                        shift and go to state 21
-    greater                        shift and go to state 22
-    smaller                        shift and go to state 23
-    equal                          shift and go to state 24
-    and_op                         shift and go to state 25
-    or_op                          shift and go to state 26
-    not_op                         shift and go to state 27
-    fun_name                       shift and go to state 28
 
 state 86
 
-    (31) divide -> ( / exp exp . )
+    (35) equal -> ( = exp exps . )
 
-    )               shift and go to state 104
+    )               shift and go to state 103
 
 
 state 87
 
-    (32) modulus -> ( MODULUS exp exp . )
+    (39) and_op -> ( AND exp exps . )
 
-    )               shift and go to state 105
+    )               shift and go to state 104
 
 
 state 88
 
-    (33) greater -> ( > exp exp . )
+    (40) or_op -> ( OR exp exps . )
 
-    )               shift and go to state 106
+    )               shift and go to state 105
 
 
 state 89
-
-    (34) smaller -> ( < exp exp . )
-
-    )               shift and go to state 107
-
-
-state 90
-
-    (35) equal -> ( = exp exps . )
-
-    )               shift and go to state 108
-
-
-state 91
-
-    (39) and_op -> ( AND exp exps . )
-
-    )               shift and go to state 109
-
-
-state 92
-
-    (40) or_op -> ( OR exp exps . )
-
-    )               shift and go to state 110
-
-
-state 93
 
     (41) not_op -> ( NOT exp ) .
 
@@ -3181,68 +3068,61 @@ state 93
     )               reduce using rule 41 (not_op -> ( NOT exp ) .)
 
 
+state 90
+
+    (42) def_stmt -> ( DEFINE ID exp ) .
+
+    BOOL_VAL        reduce using rule 42 (def_stmt -> ( DEFINE ID exp ) .)
+    NUMBER          reduce using rule 42 (def_stmt -> ( DEFINE ID exp ) .)
+    (               reduce using rule 42 (def_stmt -> ( DEFINE ID exp ) .)
+    ID              reduce using rule 42 (def_stmt -> ( DEFINE ID exp ) .)
+    $end            reduce using rule 42 (def_stmt -> ( DEFINE ID exp ) .)
+
+
+state 91
+
+    (44) fun_ids -> ( ids ) .
+
+    BOOL_VAL        reduce using rule 44 (fun_ids -> ( ids ) .)
+    NUMBER          reduce using rule 44 (fun_ids -> ( ids ) .)
+    ID              reduce using rule 44 (fun_ids -> ( ids ) .)
+    (               reduce using rule 44 (fun_ids -> ( ids ) .)
+
+
+state 92
+
+    (45) ids -> ID ids .
+
+    )               reduce using rule 45 (ids -> ID ids .)
+
+
+state 93
+
+    (43) fun_exp -> ( FUN fun_ids exp ) .
+
+    BOOL_VAL        reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+    NUMBER          reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+    ID              reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+    (               reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+    $end            reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+    )               reduce using rule 43 (fun_exp -> ( FUN fun_ids exp ) .)
+
+
 state 94
 
-    (42) def_stmt -> ( DEFINE variable exp ) .
+    (55) if_exp -> ( IF exp exp exp . )
 
-    BOOL_VAL        reduce using rule 42 (def_stmt -> ( DEFINE variable exp ) .)
-    NUMBER          reduce using rule 42 (def_stmt -> ( DEFINE variable exp ) .)
-    (               reduce using rule 42 (def_stmt -> ( DEFINE variable exp ) .)
-    ID              reduce using rule 42 (def_stmt -> ( DEFINE variable exp ) .)
-    $end            reduce using rule 42 (def_stmt -> ( DEFINE variable exp ) .)
+    )               shift and go to state 106
 
 
 state 95
-
-    (45) fun_ids -> ( ids ) .
-
-    BOOL_VAL        reduce using rule 45 (fun_ids -> ( ids ) .)
-    NUMBER          reduce using rule 45 (fun_ids -> ( ids ) .)
-    ID              reduce using rule 45 (fun_ids -> ( ids ) .)
-    (               reduce using rule 45 (fun_ids -> ( ids ) .)
-
-
-state 96
-
-    (46) ids -> ID ids .
-
-    )               reduce using rule 46 (ids -> ID ids .)
-
-
-state 97
-
-    (44) fun_exp -> ( FUN fun_ids fun_body ) .
-
-    BOOL_VAL        reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-    NUMBER          reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-    ID              reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-    (               reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-    $end            reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-    )               reduce using rule 44 (fun_exp -> ( FUN fun_ids fun_body ) .)
-
-
-state 98
-
-    (56) if_exp -> ( IF test_exp then_exp else_exp . )
-
-    )               shift and go to state 111
-
-
-state 99
-
-    (59) else_exp -> exp .
-
-    )               reduce using rule 59 (else_exp -> exp .)
-
-
-state 100
 
     (10) exps -> exp exps .
 
     )               reduce using rule 10 (exps -> exp exps .)
 
 
-state 101
+state 96
 
     (28) plus -> ( + exp exps ) .
 
@@ -3254,7 +3134,7 @@ state 101
     )               reduce using rule 28 (plus -> ( + exp exps ) .)
 
 
-state 102
+state 97
 
     (29) minus -> ( - exp exp ) .
 
@@ -3266,14 +3146,19 @@ state 102
     )               reduce using rule 29 (minus -> ( - exp exp ) .)
 
 
-state 103
+state 98
 
-    (30) multiply -> ( * exp exp exps . )
+    (30) multiply -> ( * exp exps ) .
 
-    )               shift and go to state 112
+    BOOL_VAL        reduce using rule 30 (multiply -> ( * exp exps ) .)
+    NUMBER          reduce using rule 30 (multiply -> ( * exp exps ) .)
+    (               reduce using rule 30 (multiply -> ( * exp exps ) .)
+    ID              reduce using rule 30 (multiply -> ( * exp exps ) .)
+    $end            reduce using rule 30 (multiply -> ( * exp exps ) .)
+    )               reduce using rule 30 (multiply -> ( * exp exps ) .)
 
 
-state 104
+state 99
 
     (31) divide -> ( / exp exp ) .
 
@@ -3285,7 +3170,7 @@ state 104
     )               reduce using rule 31 (divide -> ( / exp exp ) .)
 
 
-state 105
+state 100
 
     (32) modulus -> ( MODULUS exp exp ) .
 
@@ -3297,7 +3182,7 @@ state 105
     )               reduce using rule 32 (modulus -> ( MODULUS exp exp ) .)
 
 
-state 106
+state 101
 
     (33) greater -> ( > exp exp ) .
 
@@ -3309,7 +3194,7 @@ state 106
     )               reduce using rule 33 (greater -> ( > exp exp ) .)
 
 
-state 107
+state 102
 
     (34) smaller -> ( < exp exp ) .
 
@@ -3321,7 +3206,7 @@ state 107
     )               reduce using rule 34 (smaller -> ( < exp exp ) .)
 
 
-state 108
+state 103
 
     (35) equal -> ( = exp exps ) .
 
@@ -3333,7 +3218,7 @@ state 108
     )               reduce using rule 35 (equal -> ( = exp exps ) .)
 
 
-state 109
+state 104
 
     (39) and_op -> ( AND exp exps ) .
 
@@ -3345,7 +3230,7 @@ state 109
     )               reduce using rule 39 (and_op -> ( AND exp exps ) .)
 
 
-state 110
+state 105
 
     (40) or_op -> ( OR exp exps ) .
 
@@ -3357,28 +3242,16 @@ state 110
     )               reduce using rule 40 (or_op -> ( OR exp exps ) .)
 
 
-state 111
+state 106
 
-    (56) if_exp -> ( IF test_exp then_exp else_exp ) .
+    (55) if_exp -> ( IF exp exp exp ) .
 
-    BOOL_VAL        reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-    NUMBER          reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-    (               reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-    ID              reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-    $end            reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-    )               reduce using rule 56 (if_exp -> ( IF test_exp then_exp else_exp ) .)
-
-
-state 112
-
-    (30) multiply -> ( * exp exp exps ) .
-
-    BOOL_VAL        reduce using rule 30 (multiply -> ( * exp exp exps ) .)
-    NUMBER          reduce using rule 30 (multiply -> ( * exp exp exps ) .)
-    (               reduce using rule 30 (multiply -> ( * exp exp exps ) .)
-    ID              reduce using rule 30 (multiply -> ( * exp exp exps ) .)
-    $end            reduce using rule 30 (multiply -> ( * exp exp exps ) .)
-    )               reduce using rule 30 (multiply -> ( * exp exp exps ) .)
+    BOOL_VAL        reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
+    NUMBER          reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
+    (               reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
+    ID              reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
+    $end            reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
+    )               reduce using rule 55 (if_exp -> ( IF exp exp exp ) .)
 
 WARNING: 
 WARNING: Conflicts:
