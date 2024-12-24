@@ -179,3 +179,88 @@ def test_case_08_1(input_text, expected_output, capsys):
     parse_input(input_text)
     captured = capsys.readouterr()
     assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('''(define fact
+  (fun (n) (if (< n 3) n
+               (* n (fact (- n 1))))))''', ''),
+    ('(print-num (fact 2))', '2'),
+    ('(print-num (fact 3))', '6'),
+    ('(print-num (fact 4))', '24'),
+    ('(print-num (fact 10))', '3628800'),
+    ('''(define fib (fun (x)
+  (if (< x 2) x (+
+                 (fib (- x 1))
+                 (fib (- x 2))))))''', ''),
+    ('(print-num (fib 1))', '1'),
+    ('(print-num (fib 3))', '2'),
+    ('(print-num (fib 5))', '5'),
+    ('(print-num (fib 10))', '55'),
+    ('(print-num (fib 20))', '6765'),
+])
+def test_case_b1_1(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('''(define min
+  (fun (a b)
+    (if (< a b) a b)))''', ''),
+    ('''(define max
+  (fun (a b)
+    (if (> a b) a b)))''', ''),
+    ('''(define gcd
+  (fun (a b)
+    (if (= 0 (mod (max a b) (min a b)))
+        (min a b)
+        (gcd (min a b) (mod (max a b) (min a b))))))''', ''),
+    ('(print-num (gcd 100 88))', '4'),
+    ('(print-num (gcd 1234 5678))', '2'),
+    ('(print-num (gcd 81 54))', '27'),
+])
+def test_case_b1_2(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('(+ 1 2 3 (or #t #f))', 'Type error!'),
+])
+def test_case_b2_1(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('(+ 1 2 3 (or #t #f))', 'Type error!'),
+])
+def test_case_b2_1(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('''(define f
+  (fun (x)
+    (if (> x 10) 10 (= x 5))))''', ''),
+    ('(print-num (* 2 (f 4)))', 'Type error!'),
+])
+def test_case_b2_2(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('''(define dist-square
+  (fun (x y)
+    (define square (fun (x) (* x x)))
+    (+ (square x) (square y))))''', ''),
+    ('(print-num (dist-square 3 4))', '25'),
+])
+def test_case_b3_1(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    

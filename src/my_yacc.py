@@ -175,15 +175,21 @@ def p_def_stmt(p):
     value = p[4]
     variable_node = AstNode(node_type=NodeType.VARIABLE, leaf=variable_name)
     p[0] = AstNode(node_type=NodeType.DEFINE, children=[variable_node, value], leaf='define')
-    
+
+# def p_def_stmts(p):
+#     '''
+#     def_stmts : def_stmt def_stmts
+#               | empty
+#     '''
 def p_fun_exp(p):
     '''
     fun_exp : '(' FUN fun_ids exp ')'
     '''
-    fun_ids = p[3]
+    fun_ids: list = p[3]
     func_body = p[4]
-    fun_ids_node = AstNode(node_type=NodeType.FUN_IDS, leaf=fun_ids)
-    p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids_node, func_body], leaf='fun')
+    #fun_ids_node = AstNode(node_type=NodeType.FUN_IDS, leaf=fun_ids)
+    #p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids_node, func_body], leaf='fun')
+    p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids, func_body], leaf='fun')
     
 def p_fun_ids(p):
     '''
@@ -289,7 +295,10 @@ def parse_input(s, evaluator = evaluator):
     except ValueError as e:
         print(e)
     except EvalError as e:
-        print(f"Evaluation error: {e}")
+        if str(e) == "Type error!":
+            print("Type error!")
+        else:
+            print(f"Evaluation error: {e}")
     except SyntaxError as e:
         print('syntax error')
 

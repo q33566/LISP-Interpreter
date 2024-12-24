@@ -24,8 +24,10 @@ class Evaluator:
     def current_env(self):
         return self.env_stack[-1]
 
-    def push_env(self):
-        self.env_stack.append({})
+    def push_env(self, new_env=None):
+        if new_env is None:
+            new_env = {}
+        self.env_stack.append(new_env)
     
     def pop_env(self):
         self.env_stack.pop()
@@ -59,6 +61,9 @@ class Evaluator:
     def eval_num_op(self, node):
         operator = node.leaf
         operands = [self.evaluate(child) for child in node.children]
+        for operand in operands:
+            if isinstance(operand, bool):
+                raise EvalError('Type error!')
         if operator == '+':
             return sum(operands)
         elif operator == '-':
@@ -124,6 +129,8 @@ class Evaluator:
         condition: AstNode = node.children[0]
         true_branch: AstNode = node.children[1]
         false_branch: AstNode = node.children[2]
+        
+        
         if(self.evaluate(condition)):
             return self.evaluate(true_branch)
         else:
@@ -132,17 +139,22 @@ class Evaluator:
     def eval_print(self, node):
         expr = self.evaluate(node.children[0])
         if node.leaf == 'PRINT_NUM':
+            # if(isinstance(expr, bool)):
+            #     raise EvalError('Type error!')
             print(int(expr))
         elif node.leaf == 'PRINT_BOOL':
+            # if(isinstance(expr, int)):
+            #     raise EvalError('Type error!')
             print('#t' if expr else '#f')
         else:
             raise EvalError(f"Unknown print type '{node.leaf}'")
         return None 
     
     def eval_fun(self, node:AstNode):
-        fun_ids: AstNode = node.children[0]
+        # fun_ids: AstNode = node.children[0]
+        fun_ids: list  = node.children[0]
         fun_body = node.children[1]
-        param_names = fun_ids.leaf
+        param_names = fun_ids
         return Function(body=fun_body, param_names=param_names, env=self.current_env.copy())
 
     def eval_fun_call(self, node:AstNode):
@@ -151,9 +163,14 @@ class Evaluator:
             raise EvalError(f"'{fun}' is not a function")
         args = [self.evaluate(arg) for arg in node.children[1:]]
         
-        if len(args) != len(node.children[1:]):
+        if len(args) != len(fun.param_names):
             raise EvalError(f"Function expected {len(fun.param_names)} arguments, got {len(args)}")
-        self.push_env()
+        
+        new_env = fun.env.copy()
+        for param, arg in zip(fun.param_names, args):
+            new_env[param] = arg
+        
+        self.push_env(new_env)
         for param, arg in zip(fun.param_names, args):
             self.current_env[param] = arg
         try:
