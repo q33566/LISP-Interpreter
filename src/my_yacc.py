@@ -1,45 +1,53 @@
 import ply.yacc as yacc
 import ply.lex as lex
+from my_eval import Evaluator, EvalError
 from my_lex import tokens
+from my_ast import *
 import my_lex
 symbol_table = {}
-start = 'program'   
+start = 'program'
 def p_empty(p):
     'empty :'
-    pass
+    p[0] = None
 
 def p_program(p):
     '''
     program : stmts
     '''
-    
+    p[0] = Node(node_type=NodeType.PROGRAM, children=p[1])
 def p_stmts(p):
     '''
     stmts : stmt stmts
              | stmt 
     '''
+    if len(p) == 3:
+        if p[1] != None:
+            p[0] = [p[1]] + p[2]
+        else:
+            p[0] = p[2]
+    else:
+        if p[1] is not None:
+            p[0] = [p[1]]
+        else:
+            p[0] = []
+        
 def p_stmt(p):
     '''
     stmt : exp
             | def_stmt
             | print_stmt
     '''
-    if(p[1] == 'def'):
-        pass
-    elif(p[1] == 'print'):
-        pass
-    else:
-        p[0] = p[1]
+    p[0] = p[1]
+    
 def p_print_stmt(p):
     '''
     print_stmt : '(' PRINT_NUM exp ')' 
                   | '(' PRINT_BOOL exp ')'
     '''
     if(p.slice[2].type == 'PRINT_NUM'):
-        print(int(p[3]))
+        p[0] = Node(node_type=NodeType.PRINT, children=[p[3]], leaf='PRINT_NUM')
     else:
-        bool_val = '#t' if p[3] else '#f'
-        print(bool_val)
+        p[0] = Node(node_type=NodeType.PRINT, children=[p[3]], leaf='PRINT_BOOL')
         
 
 def p_exps(p):
@@ -64,7 +72,12 @@ def p_exp(p):
         | fun_call
         | if_exp
     '''
-    p[0] = p[1]
+    if p.slice[1].type == 'NUMBER':
+        p[0] = Node(node_type=NodeType.NUMBER, children=[], leaf=p[1])
+    elif p.slice[1].type == 'BOOL_VAL':
+        p[0] = Node(node_type=NodeType.BOOL_VAL, children=[], leaf=p[1])
+    else:
+        p[0] = p[1]
 
 def p_num_op(p):
     '''
@@ -83,59 +96,49 @@ def p_plus(p):
     '''
     plus       : '(' '+' exp exps ')'
     '''
-    p[0] = int(p[3] + sum(p[4]))
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='+')
 
 def p_minus(p):
     '''
     minus      : '(' '-' exp exp ')'
     '''
-    p[0] = int(p[3] - p[4])
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='-')
     
 def p_multiply(p):
     '''
     multiply   : '(' '*' exp exps ')'
     '''
-    result = p[3]
-    for i in p[4]:
-        result = result * i
-    p[0] = int(result)
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='*')
     
 def p_devide(p):
     '''
     divide     : '(' '/' exp exp ')'
     '''
-    p[0] = int(p[3] / p[4])
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='/')
 
 def p_modulus(p):
     '''
     modulus    : '(' MODULUS exp exp ')'
     '''
-    p[0] = p[3] % p[4]
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='%')
     
 def p_greater(p):
     '''
     greater    : '(' '>' exp exp ')'
     '''
-    p[0] = p[3] > p[4]
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='>')
 
 def p_smaller(p):
     '''
     smaller    : '(' '<' exp exp ')'
     '''
-    p[0] = p[3] < p[4]
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='<')
     
 def p_equal(p):
     '''
     equal      : '(' '=' exp exps ')' 
     '''
-    def check_same_element(my_list):
-        tmp = my_list[0]
-        for i in my_list:
-            if i!=tmp:
-                return False
-        return True
-    my_list = [p[3]] + p[4]
-    p[0] = check_same_element(my_list)
+    p[0] = Node(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='=')
     
 def p_ligical_op(p):
     '''
@@ -149,53 +152,44 @@ def p_and_op(p):
     '''
     and_op    : '(' AND exp exps ')'
     '''
-    def and_list(my_list):
-        return not (False in my_list)
-    my_list = p[4]+[p[3]]
-    p[0] = and_list(my_list)
+    p[0] = Node(node_type=NodeType.LOGICAL_OP , children=[p[3]] + p[4], leaf='and')
     
 def p_or_op(p):
     '''
     or_op     : '(' OR exp exps ')'
     '''
-    def or_list(my_list):
-        return True in my_list
-    # The following is wrong because p[4] may be only one element, not a list.
-    # my_list = p[4].append(p[3])
-    my_list = [p[3]] + p[4]
-    p[0] = or_list(my_list)
+    p[0] = Node(node_type=NodeType.LOGICAL_OP , children=[p[3]] + p[4], leaf='or')
     
     
 def p_not_op(p):
     '''
     not_op    : '(' NOT exp ')'
     '''
-    p[0] = not p[3]
+    p[0] = Node(node_type=NodeType.LOGICAL_OP , children=[p[3]], leaf='not')
     
 def p_def_stmt(p):
     '''
     def_stmt : '(' DEFINE ID exp ')'
     '''
     variable_name = p[3]
-    symbol_table[variable_name] = p[4]
+    value = p[4]
+    variable_node = Node(node_type=NodeType.VARIABLE, leaf=variable_name)
+    p[0] = Node(node_type=NodeType.DEFINE, children=[variable_node, value], leaf='define')
     
 def p_fun_exp(p):
     '''
     fun_exp : '(' FUN fun_ids exp ')'
     '''
-    def fun(*args):
-        param_names = p[3]
-        func_body = p[4]
-        local_scope = {name: value for name, value in zip(param_names, args)}
-        return eval_fun_body(body=func_body, local_scope=local_scope)
-    p[0] = fun
-    pass
-
+    fun_ids = p[3]  # List of parameter names
+    func_body = p[4]  # AST of the function body
+    fun_ids_node = Node(node_type=NodeType.FUN_IDS, leaf=fun_ids)
+    p[0] = Node(node_type=NodeType.FUN, children=[fun_ids_node, func_body], leaf='fun')
+    
 def p_fun_ids(p):
     '''
     fun_ids : '(' ids ')'
     '''
-    p[0] = p[1]
+    p[0] = p[2]
     
 def p_ids(p):
     '''
@@ -212,16 +206,15 @@ def p_last_exp(p):
     '''
     last_exp : exp
     '''
-    pass
+    
 def p_fun_call(p):
     '''
     fun_call : fun_exp params
             | fun_name params
     '''
-    fun = p[1]
+    fun_node = p[1]
     params = p[2]
-    print(params)
-    p[0] = fun(*params)
+    p[0] = Node(node_type=NodeType.FUN_CALL, children=[fun_node] + params, leaf='fun_call')
 
 def p_params(p):
     '''
@@ -229,39 +222,39 @@ def p_params(p):
           | empty
     '''
     if len(p) == 3:
-        p[0] = [p[2]] + p[3]
+        p[0] = [p[1]] + p[2]
     else:
         p[0] = []
+
 def p_param(p):
     '''
     param : exp
     '''
     p[0] = p[1]
-
+    
 def p_variable(p):
     '''
     variable : ID
     '''
-    variable_name = p[1]
-    if variable_name in symbol_table:
-        p[0] = symbol_table[variable_name]
-    else:
-        raise NameError(f"Variable '{variable_name}' is not defined")
+    var_name = p[1]
+    p[0] = Node(node_type=NodeType.VARIABLE, leaf=var_name)
+
     
 def p_fun_name(p):
     '''
     fun_name : ID
     '''
-    p[0] = p[1]
+    fun_name = p[1]
+    p[0] = Node(node_type=NodeType.VARIABLE, children=[], leaf=fun_name)
+    
 def p_if_exp(p):
     '''
     if_exp : '(' IF exp exp exp ')'
     '''
-    if p[3]:
-        p[0] = p[4]
-    else:
-        p[0] = p[5]
-    
+    condition = p[3]
+    true_branch = p[4]
+    false_branch = p[5]
+    p[0] = Node(type=NodeType.IF_EXP, children=[condition, true_branch, false_branch], leaf='if')
     
 # Error rule for syntax errors
 def p_error(p):
@@ -270,25 +263,48 @@ def p_error(p):
 def build_parser():
     return yacc.yacc(debug=False)
 
-def parse_input(s, parser=None):
-    if parser is None:
-        parser = build_parser()
+def parse_input(s):
+    evaluator = Evaluator()
+    parser = build_parser()
     lexer = lex.lex(module=my_lex)
     try:
-        parse_result = parser.parse(s, lexer=lexer)
-        return parse_result
-    except SyntaxError:
+        result = parser.parse(s, lexer=lexer)
+        if isinstance(result, Node):
+                #print("AST:")
+                #print_ast(result)
+                #print("\nEvaluation:")
+                evaluator.evaluate(result)
+        elif isinstance(result, list):
+            #print("AST:")
+            #for node in result:
+                #print_ast(node)
+            # print("\nEvaluation:")
+            for node in result:
+                evaluator.evaluate(node)
+        else:
+            print(result)
+    except NameError as e:
+        print(e)
+    except TypeError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+    except EvalError as e:
+        print(f"Evaluation error: {e}")
+    except SyntaxError as e:
         print('syntax error')
-        return 'syntax error'
 
-def eval_fun_body(body, local_scope):
-    global symbol_table
-    original_scope_table = symbol_table.copy()
-    symbol_table.update(local_scope)
-    try:
-        return parse_input(body)
-    finally:
-        symbol_table = original_scope_table
+def print_ast(ast, indent=0):
+    spacing = '  ' * indent
+    if isinstance(ast, Node):
+        print(f"{spacing}{ast.node_type.name}: {ast.leaf}")
+        for child in ast.children:
+            print_ast(child, indent + 1)
+    elif isinstance(ast, list):
+        for item in ast:
+            print_ast(item, indent)
+    else:
+        print(f"{spacing}{ast}")
 
 precedence = (
     ('left', '+', '-'),
@@ -296,16 +312,12 @@ precedence = (
 )
 if __name__ == "__main__":
     # Build the parser
-    parser = yacc.yacc(debug=True)
     while True:
         try:
             s = input('input: ')
         except EOFError:
             break
-        if not s: continue
-        lexer = lex.lex(module=my_lex)
-        try:
-            result = parser.parse(s, lexer = lexer)
-        except SyntaxError:
-            print('syntax error')
-            pass
+        if not s:
+            continue
+        parse_input(s)
+            
