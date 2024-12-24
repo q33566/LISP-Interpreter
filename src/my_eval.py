@@ -1,6 +1,12 @@
+from my_ast import AstNode
 class EvalError(Exception):
     pass
-
+class Function:
+    def __init__(self, param_names, body, env):
+        self.param_names = param_names
+        self.body = body
+        self.env = env
+        
 class Evaluator:
     def __init__(self):
         self.global_env = {}
@@ -14,6 +20,7 @@ class Evaluator:
     def generic_eval(self, node):
         raise EvalError(f"No eval_{node.node_type.name.lower()} method")
     
+    @property
     def current_env(self):
         return self.env_stack[-1]
 
@@ -29,11 +36,25 @@ class Evaluator:
             result = self.evaluate(stmt)
         return result
     
-    def eval_number(self, node):
-        return node.leaf
+    def eval_define(self, node: AstNode):
+        variable_node: AstNode = node.children[0]
+        value_node: AstNode = node.children[1]
+        variable_value = self.evaluate(value_node)
+        self.current_env[variable_node.leaf] = variable_value
+        return variable_value
     
-    def eval_bool_val(self, node):
-        return node.leaf == '#t'
+    def eval_variable(self, node: AstNode):
+        var_name = node.leaf
+        for environment in reversed(self.env_stack):
+            if var_name in environment:
+                return environment[var_name]
+        raise EvalError(f"Undefined variable '{var_name}'")
+    
+    def eval_number(self, node: AstNode):
+        return int(node.leaf)
+    
+    def eval_bool_val(self, node: AstNode):
+        return node.leaf
     
     def eval_num_op(self, node):
         operator = node.leaf
@@ -54,7 +75,7 @@ class Evaluator:
                 raise EvalError("Division requires exactly two operands")
             if operands[1] == 0:
                 raise EvalError("Division by zero")
-            return operands[0] / operands[1]
+            return int(operands[0] / operands[1])
         elif operator == '%':
             if len(operands) != 2:
                 raise EvalError("Modulus requires exactly two operands")
@@ -74,6 +95,39 @@ class Evaluator:
             return all(op == first for op in operands[1:])
         else:
             raise EvalError(f"Unknown operator '{operator}'")
+    def eval_logical_op(self, node: AstNode):
+        operator = node.leaf
+        if operator == 'and':
+            children: list[AstNode] = node.children
+            for child in children:
+                result = self.evaluate(child)
+                if not result:
+                    return False
+            return True
+        elif operator == 'or':
+            children: list[AstNode] =  node.children
+            for child in children:
+                result = self.evaluate(child)
+                if result:
+                    return True
+            return False
+        elif operator == 'not':
+            child: AstNode =  node.children[0]
+            if len(node.children) != 1:
+                raise EvalError("'not' operator requires exactly one operand")
+            return not self.evaluate(child)
+        else:
+            raise EvalError(f"Unknown logical operator '{operator}'")
+    
+    
+    def eval_if_exp(self, node: AstNode):
+        condition: AstNode = node.children[0]
+        true_branch: AstNode = node.children[1]
+        false_branch: AstNode = node.children[2]
+        if(self.evaluate(condition)):
+            return self.evaluate(true_branch)
+        else:
+            return self.evaluate(false_branch)
     
     def eval_print(self, node):
         expr = self.evaluate(node.children[0])
@@ -84,3 +138,27 @@ class Evaluator:
         else:
             raise EvalError(f"Unknown print type '{node.leaf}'")
         return None 
+    
+    def eval_fun(self, node:AstNode):
+        fun_ids: AstNode = node.children[0]
+        fun_body = node.children[1]
+        param_names = fun_ids.leaf
+        return Function(body=fun_body, param_names=param_names, env=self.current_env.copy())
+
+    def eval_fun_call(self, node:AstNode):
+        fun = self.evaluate(node.children[0])
+        if not isinstance(fun, Function):
+            raise EvalError(f"'{fun}' is not a function")
+        args = [self.evaluate(arg) for arg in node.children[1:]]
+        
+        if len(args) != len(node.children[1:]):
+            raise EvalError(f"Function expected {len(fun.param_names)} arguments, got {len(args)}")
+        self.push_env()
+        for param, arg in zip(fun.param_names, args):
+            self.current_env[param] = arg
+        try:
+            result = self.evaluate(fun.body)
+        finally:
+            self.pop_env()
+        return result
+            

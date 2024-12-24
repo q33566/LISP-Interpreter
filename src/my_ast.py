@@ -8,7 +8,7 @@ class NodeType(Enum):
     FUN = auto()
     FUN_IDS = auto()
     FUN_CALL = auto()
-    IF = auto()
+    IF_EXP = auto()
     PRINT = auto()
     NUM_OP = auto()
     LOGICAL_OP = auto()
@@ -16,7 +16,7 @@ class NodeType(Enum):
     NUMBER = auto()
     BOOL_VAL = auto()
 
-class Node:
+class AstNode:
     def __init__(self, node_type: NodeType, children: list = [], leaf = None, type_info = None):
         self.node_type = node_type
         self.children = children
