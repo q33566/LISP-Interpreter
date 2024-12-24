@@ -176,20 +176,28 @@ def p_def_stmt(p):
     variable_node = AstNode(node_type=NodeType.VARIABLE, leaf=variable_name)
     p[0] = AstNode(node_type=NodeType.DEFINE, children=[variable_node, value], leaf='define')
 
-# def p_def_stmts(p):
-#     '''
-#     def_stmts : def_stmt def_stmts
-#               | empty
-#     '''
+def p_def_stmts(p):
+    '''
+    def_stmts : def_stmt def_stmts
+              | def_stmt
+    '''
 def p_fun_exp(p):
     '''
-    fun_exp : '(' FUN fun_ids exp ')'
+    fun_exp : '(' FUN fun_ids fun_body ')'
     '''
     fun_ids: list = p[3]
     func_body = p[4]
     #fun_ids_node = AstNode(node_type=NodeType.FUN_IDS, leaf=fun_ids)
     #p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids_node, func_body], leaf='fun')
     p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids, func_body], leaf='fun')
+    
+def p_fun_body(p):
+    '''
+    fun_body : def_stmts exp
+             | exp
+    '''
+    if len(p) == 2:
+        p[0] = p[1]
     
 def p_fun_ids(p):
     '''

@@ -158,7 +158,7 @@ class Evaluator:
         return Function(body=fun_body, param_names=param_names, env=self.current_env.copy())
 
     def eval_fun_call(self, node:AstNode):
-        fun = self.evaluate(node.children[0])
+        fun: Function = self.evaluate(node.children[0])
         if not isinstance(fun, Function):
             raise EvalError(f"'{fun}' is not a function")
         args = [self.evaluate(arg) for arg in node.children[1:]]
@@ -171,8 +171,6 @@ class Evaluator:
             new_env[param] = arg
         
         self.push_env(new_env)
-        for param, arg in zip(fun.param_names, args):
-            self.current_env[param] = arg
         try:
             result = self.evaluate(fun.body)
         finally:
