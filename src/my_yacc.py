@@ -5,9 +5,18 @@ from my_lex import tokens
 from my_ast import *
 import my_lex
 evaluator = Evaluator()
+# Set up a logging object
+import logging
+logging.basicConfig(
+    level = logging.DEBUG,
+    filename = "parselog.txt",
+    filemode = "w",
+    format = "%(filename)10s:%(lineno)4d:%(message)s"
+)
+log = logging.getLogger()
 start = 'program'
 def p_empty(p):
-    'empty :'
+    'empty : '
     p[0] = None
 
 def p_program(p):
@@ -110,7 +119,7 @@ def p_multiply(p):
     '''
     p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='*')
     
-def p_devide(p):
+def p_divide(p):
     '''
     divide     : '(' '/' exp exp ')'
     '''
@@ -169,18 +178,28 @@ def p_not_op(p):
     
 def p_def_stmt(p):
     '''
-    def_stmt : '(' DEFINE ID exp ')'
+    def_stmt : '(' DEFINE variable exp ')'
     '''
-    variable_name = p[3]
+    variable_node = p[3]
     value = p[4]
-    variable_node = AstNode(node_type=NodeType.VARIABLE, leaf=variable_name)
     p[0] = AstNode(node_type=NodeType.DEFINE, children=[variable_node, value], leaf='define')
 
 def p_def_stmts(p):
     '''
-    def_stmts : def_stmt def_stmts
-              | def_stmt
+    def_stmts : empty
+              | def_stmts def_stmt
     '''
+    if len(p) == 3:
+        if p[1] is not None:
+            p[0] = p[1] + [p[2]]
+        else:
+            p[0] = [p[2]]
+    else:
+        if p[1] is not None:
+            p[0] = [p[1]]
+        else:
+            p[0] = []
+            
 def p_fun_exp(p):
     '''
     fun_exp : '(' FUN fun_ids fun_body ')'
@@ -194,9 +213,12 @@ def p_fun_exp(p):
 def p_fun_body(p):
     '''
     fun_body : def_stmts exp
-             | exp
     '''
-    if len(p) == 2:
+    if len(p) == 3:
+        # 將 def_stmts 和 exp 結合起來作為函數體
+        p[0] = AstNode(node_type=NodeType.FUN_BODY, children=p[1] + [p[2]], leaf=None)
+    else:
+        # 只有一個表達式
         p[0] = p[1]
     
 def p_fun_ids(p):
@@ -215,11 +237,11 @@ def p_ids(p):
     else:
         p[0] = []
 
-def p_last_exp(p):
-    #不知道會不會用到
-    '''
-    last_exp : exp
-    '''
+# def p_last_exp(p):
+#     #不知道會不會用到
+#     '''
+#     last_exp : exp
+#     '''
     
 def p_fun_call(p):
     '''
@@ -274,14 +296,14 @@ def p_if_exp(p):
 def p_error(p):
     raise SyntaxError("syntax error")
 
-def build_parser():
-    return yacc.yacc(debug=False)
+
 
 def parse_input(s, evaluator = evaluator):
-    parser = build_parser()
+    parser = yacc.yacc(debug=True, debuglog=log)
+
     lexer = lex.lex(module=my_lex)
     try:
-        result = parser.parse(s, lexer=lexer)
+        result = parser.parse(s, lexer=lexer, debug=log)
         if isinstance(result, AstNode):
                 #print("AST:")
                 #print_ast(result)

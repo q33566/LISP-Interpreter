@@ -177,3 +177,8 @@ class Evaluator:
             self.pop_env()
         return result
             
+    def eval_fun_body(self, node: AstNode):
+        result = None
+        for child in node.children:
+            result = self.evaluate(child)
+        return result

@@ -264,3 +264,19 @@ def test_case_b3_1(input_text, expected_output, capsys):
     captured = capsys.readouterr()
     assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
     
+
+@pytest.mark.parametrize("input_text, expected_output", [
+    ('''(define diff
+  (fun (a b)
+    (define abs
+      (fun (a)
+        (if (< a 0) (- 0 a) a)))
+    (abs (- a b))))''', ''),
+    ('(print-num (diff 1 10))', '9'),
+    ('(print-num (diff 10 2))', '8'),
+])
+def test_case_b3_2(input_text, expected_output, capsys):
+    parse_input(input_text)
+    captured = capsys.readouterr()
+    assert captured.out.strip() == str(expected_output), f"Expected printed output {expected_output}, but got {captured.out.strip()}"
+    

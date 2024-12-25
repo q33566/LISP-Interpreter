@@ -15,6 +15,7 @@ class NodeType(Enum):
     VARIABLE = auto()
     NUMBER = auto()
     BOOL_VAL = auto()
+    FUN_BODY = auto()
 
 class AstNode:
     def __init__(self, node_type: NodeType, children: list = [], leaf = None, type_info = None):
