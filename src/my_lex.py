@@ -1,5 +1,6 @@
 from enum import Enum
 from ply.lex import TOKEN
+from utils.my_eval import *
 
 class Token(Enum):
     NUMBER = r'0|[1-9][0-9]*|-[1-9][0-9]*'
@@ -26,14 +27,15 @@ literals = ['+', '-', '*', '/', '>', '<', '=', '(', ')']
 @TOKEN(Token.NUMBER.value)
 def t_NUMBER(t):
     t.type = Token.NUMBER.name
-    t.value = int(t.value)
+    t.value = Number(value=int(t.value))
     return t
 
 @TOKEN(Token.BOOL_VAL.value)
 def t_BOOL_VAL(t):
     t.type = Token.BOOL_VAL.name
-    t.value = True if t.value == '#t' else False
+    t.value = Boolean(value=True) if t.value == '#t' else Boolean(value=False)
     return t
+
 @TOKEN(Token.PRINT_BOOL.value)
 def t_PRINT_BOOL(t):
     t.type = Token.PRINT_BOOL.name

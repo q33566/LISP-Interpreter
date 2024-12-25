@@ -1,10 +1,11 @@
 import ply.yacc as yacc
 import ply.lex as lex
-from my_eval import Evaluator, EvalError
+from utils.my_eval import *
 from my_lex import tokens
-from my_ast import *
+from utils.my_ast import *
 import my_lex
-evaluator = Evaluator()
+visitor = Visitor()
+#evaluator = Evaluator()
 # Set up a logging object
 import logging
 logging.basicConfig(
@@ -23,12 +24,14 @@ def p_program(p):
     '''
     program : stmts
     '''
-    p[0] = AstNode(node_type=NodeType.PROGRAM, children=p[1])
+    p[0] = Program(stmts=p[1])
+    
 def p_stmts(p):
     '''
     stmts : stmt stmts
              | stmt 
     '''
+
     if len(p) == 3:
         if p[1] != None:
             p[0] = [p[1]] + p[2]
@@ -53,10 +56,9 @@ def p_print_stmt(p):
     print_stmt : '(' PRINT_NUM exp ')' 
                   | '(' PRINT_BOOL exp ')'
     '''
-    if(p.slice[2].type == 'PRINT_NUM'):
-        p[0] = AstNode(node_type=NodeType.PRINT, children=[p[3]], leaf='PRINT_NUM')
-    else:
-        p[0] = AstNode(node_type=NodeType.PRINT, children=[p[3]], leaf='PRINT_BOOL')
+    print_type = p.slice[2].type
+    exp = p[3]
+    p[0] = Print(exp=exp, print_type=print_type)
         
 
 def p_exps(p):
@@ -81,12 +83,7 @@ def p_exp(p):
         | fun_call
         | if_exp
     '''
-    if p.slice[1].type == 'NUMBER':
-        p[0] = AstNode(node_type=NodeType.NUMBER, children=[], leaf=p[1])
-    elif p.slice[1].type == 'BOOL_VAL':
-        p[0] = AstNode(node_type=NodeType.BOOL_VAL, children=[], leaf=p[1])
-    else:
-        p[0] = p[1]
+    p[0] = p[1]
 
 def p_num_op(p):
     '''
@@ -105,49 +102,65 @@ def p_plus(p):
     '''
     plus       : '(' '+' exp exps ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='+')
+    operator = '+'
+    operands = [p[3]] + p[4]
+    p[0] = NumOp(operator=operator, operands=operands)
 
 def p_minus(p):
     '''
     minus      : '(' '-' exp exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='-')
+    operator = '-'
+    operands = [p[3], p[4]]
+    p[0] = NumOp(operator=operator, operands=operands)
     
 def p_multiply(p):
     '''
     multiply   : '(' '*' exp exps ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='*')
+    operator = '*'
+    operands = [p[3]] + p[4]
+    p[0] = NumOp(operator=operator, operands=operands)
     
 def p_divide(p):
     '''
     divide     : '(' '/' exp exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='/')
+    operator = '/'
+    operands = [p[3], p[4]]
+    p[0] = NumOp(operator=operator, operands=operands)
 
 def p_modulus(p):
     '''
     modulus    : '(' MODULUS exp exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='%')
+    operator = '%'
+    operands = [p[3], p[4]]
+    p[0] = NumOp(operator=operator, operands=operands)
     
 def p_greater(p):
     '''
     greater    : '(' '>' exp exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='>')
+    operator = '>'
+    operands = [p[3], p[4]]
+    p[0] = NumOp(operator=operator, operands=operands)
 
 def p_smaller(p):
     '''
     smaller    : '(' '<' exp exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3], p[4]], leaf='<')
+    operator = '<'
+    operands = [p[3], p[4]]
+    p[0] = NumOp(operator=operator, operands=operands)
     
 def p_equal(p):
     '''
     equal      : '(' '=' exp exps ')' 
     '''
-    p[0] = AstNode(node_type=NodeType.NUM_OP, children=[p[3]] + p[4], leaf='=')
+    operator = '='
+    operands = [p[3]] + p[4]
+    p[0] = NumOp(operator=operator, operands=operands)
     
 def p_logical_op(p):
     '''
@@ -161,20 +174,25 @@ def p_and_op(p):
     '''
     and_op    : '(' AND exp exps ')'
     '''
-    p[0] = AstNode(node_type=NodeType.LOGICAL_OP , children=[p[3]] + p[4], leaf='and')
+    operator = 'and'
+    operands = [p[3]] + p[4]
+    p[0] = LogicalOp(operator=operator, operands=operands)
     
 def p_or_op(p):
     '''
     or_op     : '(' OR exp exps ')'
     '''
-    p[0] = AstNode(node_type=NodeType.LOGICAL_OP , children=[p[3]] + p[4], leaf='or')
-    
+    operator = 'or'
+    operands = [p[3]] + p[4]
+    p[0] = LogicalOp(operator=operator, operands=operands)
     
 def p_not_op(p):
     '''
     not_op    : '(' NOT exp ')'
     '''
-    p[0] = AstNode(node_type=NodeType.LOGICAL_OP , children=[p[3]], leaf='not')
+    operator = 'not'
+    operands = [p[3]]
+    p[0] = LogicalOp(operator=operator, operands=operands)
     
 def p_def_stmt(p):
     '''
@@ -290,45 +308,35 @@ def p_if_exp(p):
     condition = p[3]
     true_branch = p[4]
     false_branch = p[5]
-    p[0] = AstNode(node_type=NodeType.IF_EXP, children=[condition, true_branch, false_branch], leaf='if')
+    p[0] = IfExp(condition=condition, true_branch=true_branch, false_branch=false_branch)
     
-# Error rule for syntax errors
 def p_error(p):
     raise SyntaxError("syntax error")
 
 
 
-def parse_input(s, evaluator = evaluator):
+def parse_input(s):
     parser = yacc.yacc(debug=True, debuglog=log)
 
     lexer = lex.lex(module=my_lex)
     try:
         result = parser.parse(s, lexer=lexer, debug=log)
+
         if isinstance(result, AstNode):
-                #print("AST:")
-                #print_ast(result)
-                #print("\nEvaluation:")
-                evaluator.evaluate(result)
-        elif isinstance(result, list):
-            #print("AST:")
-            #for node in result:
-                #print_ast(node)
-            # print("\nEvaluation:")
-            for node in result:
-                evaluator.evaluate(node)
+            result.accept(visitor)
         else:
-            print(result)
-    except NameError as e:
-        print(e)
-    except TypeError as e:
-        print(e)
-    except ValueError as e:
-        print(e)
-    except EvalError as e:
-        if str(e) == "Type error!":
-            print("Type error!")
-        else:
-            print(f"Evaluation error: {e}")
+            print('yacc的return 怪怪的')
+    # except NameError as e:
+    #     print(e)
+    # except TypeError as e:
+    #     print(e)
+    # except ValueError as e:
+    #     print(e)
+    # except EvalError as e:
+    #     if str(e) == "Type error!":
+    #         print("Type error!")
+    #     else:
+    #         print(f"Evaluation error: {e}")
     except SyntaxError as e:
         print('syntax error')
 
@@ -357,5 +365,5 @@ if __name__ == "__main__":
             break
         if not s:
             continue
-        parse_input(s,evaluator=evaluator)
+        parse_input(s)
             
