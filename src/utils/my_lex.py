@@ -1,6 +1,6 @@
 from enum import Enum
 from ply.lex import TOKEN
-from utils.my_eval import *
+from utils.my_visitor import *
 
 class Token(Enum):
     NUMBER = r'0|[1-9][0-9]*|-[1-9][0-9]*'

@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from my_yacc import parse_input
+from utils.my_yacc import parse_input
 test_case_input = list(Path('../public_test_data/in').iterdir())
 @pytest.mark.parametrize("input_text, expected_output", [
     ("(+)", 'syntax error'),

@@ -1,13 +1,13 @@
 import ply.yacc as yacc
 import ply.lex as lex
-from utils.my_eval import *
-from my_lex import tokens
+from utils.my_visitor import *
+from utils.my_lex import tokens
 from utils.my_ast import *
-import my_lex
-visitor = Visitor()
-#evaluator = Evaluator()
-# Set up a logging object
+import utils.my_lex as my_lex
 import logging
+
+#global var setup
+visitor = Visitor()
 logging.basicConfig(
     level = logging.DEBUG,
     filename = "parselog.txt",
@@ -15,6 +15,9 @@ logging.basicConfig(
     format = "%(filename)10s:%(lineno)4d:%(message)s"
 )
 log = logging.getLogger()
+
+################################## grammar start #######################################
+
 start = 'program'
 def p_empty(p):
     'empty : '
@@ -198,9 +201,9 @@ def p_def_stmt(p):
     '''
     def_stmt : '(' DEFINE variable exp ')'
     '''
-    variable_node = p[3]
-    value = p[4]
-    p[0] = AstNode(node_type=NodeType.DEFINE, children=[variable_node, value], leaf='define')
+    variable_node: AstNode = p[3]
+    value_node: AstNode = p[4]
+    p[0] = DefStmt(variable_node=variable_node, value_node=value_node)
 
 def p_def_stmts(p):
     '''
@@ -222,28 +225,26 @@ def p_fun_exp(p):
     '''
     fun_exp : '(' FUN fun_ids fun_body ')'
     '''
-    fun_ids: list = p[3]
-    func_body = p[4]
-    #fun_ids_node = AstNode(node_type=NodeType.FUN_IDS, leaf=fun_ids)
-    #p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids_node, func_body], leaf='fun')
-    p[0] = AstNode(node_type=NodeType.FUN, children=[fun_ids, func_body], leaf='fun')
-    
+    fun_ids_node: FunIds = p[3]
+    fun_body_node: FunBody = p[4]
+    p[0] = FunExp(fun_ids_node = fun_ids_node, fun_body_node = fun_body_node)
+
 def p_fun_body(p):
     '''
     fun_body : def_stmts exp
     '''
     if len(p) == 3:
-        # 將 def_stmts 和 exp 結合起來作為函數體
-        p[0] = AstNode(node_type=NodeType.FUN_BODY, children=p[1] + [p[2]], leaf=None)
-    else:
-        # 只有一個表達式
-        p[0] = p[1]
+        def_stmts = p[1]
+        exp = p[2]
+        fun_body: list[AstNode] = def_stmts + [exp]
+        p[0] = FunBody(fun_body = fun_body)
     
 def p_fun_ids(p):
     '''
     fun_ids : '(' ids ')'
     '''
-    p[0] = p[2]
+    fun_ids: list = p[2]
+    p[0] = FunIds(fun_ids = fun_ids)
     
 def p_ids(p):
     '''
@@ -254,12 +255,6 @@ def p_ids(p):
         p[0] = [p[1]] + p[2]
     else:
         p[0] = []
-
-# def p_last_exp(p):
-#     #不知道會不會用到
-#     '''
-#     last_exp : exp
-#     '''
     
 def p_fun_call(p):
     '''
@@ -268,7 +263,7 @@ def p_fun_call(p):
     '''
     fun_node = p[2]
     params = p[3]
-    p[0] = AstNode(node_type=NodeType.FUN_CALL, children=[fun_node] + params, leaf='fun_call')
+    p[0] = FunCall(fun_node, params=params)
 
 def p_params(p):
     '''
@@ -291,7 +286,7 @@ def p_variable(p):
     variable : ID
     '''
     var_name = p[1]
-    p[0] = AstNode(node_type=NodeType.VARIABLE, leaf=var_name)
+    p[0] = Variable(var_name=var_name)
 
     
 def p_fun_name(p):
@@ -299,7 +294,7 @@ def p_fun_name(p):
     fun_name : ID
     '''
     fun_name = p[1]
-    p[0] = AstNode(node_type=NodeType.VARIABLE, children=[], leaf=fun_name)
+    p[0] = Variable(var_name=fun_name)
     
 def p_if_exp(p):
     '''
@@ -313,7 +308,7 @@ def p_if_exp(p):
 def p_error(p):
     raise SyntaxError("syntax error")
 
-
+############################## grammar end ####################################
 
 def parse_input(s):
     parser = yacc.yacc(debug=True, debuglog=log)
@@ -325,18 +320,10 @@ def parse_input(s):
         if isinstance(result, AstNode):
             result.accept(visitor)
         else:
-            print('yacc的return 怪怪的')
-    # except NameError as e:
-    #     print(e)
-    # except TypeError as e:
-    #     print(e)
-    # except ValueError as e:
-    #     print(e)
-    # except EvalError as e:
-    #     if str(e) == "Type error!":
-    #         print("Type error!")
-    #     else:
-    #         print(f"Evaluation error: {e}")
+            print('yacc return value not good! ')
+    except EvalError as e:
+        if str(e) == "Type error!":
+            print("Type error!")
     except SyntaxError as e:
         print('syntax error')
 
@@ -352,18 +339,9 @@ def print_ast(ast, indent=0):
     else:
         print(f"{spacing}{ast}")
 
-precedence = (
-    ('left', '+', '-'),
-    ('left', '*', '/'),
-)
-if __name__ == "__main__":
-    # Build the parser
-    while True:
-        try:
-            s = input('input: ')
-        except EOFError:
-            break
-        if not s:
-            continue
-        parse_input(s)
+# precedence = (
+#     ('left', '+', '-'),
+#     ('left', '*', '/'),
+# )
+
             
