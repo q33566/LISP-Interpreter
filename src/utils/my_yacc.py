@@ -7,7 +7,6 @@ import utils.my_lex as my_lex
 import logging
 
 #global var setup
-visitor = Visitor()
 logging.basicConfig(
     level = logging.DEBUG,
     filename = "parselog.txt",
@@ -310,9 +309,8 @@ def p_error(p):
 
 ############################## grammar end ####################################
 
-def parse_input(s):
+def parse_input(s, visitor: Visitor):
     parser = yacc.yacc(debug=True, debuglog=log)
-
     lexer = lex.lex(module=my_lex)
     try:
         result = parser.parse(s, lexer=lexer, debug=log)

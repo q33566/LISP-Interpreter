@@ -5,63 +5,408 @@
    yacc.py: 445:Action : Shift and goto state 15
    yacc.py: 410:
    yacc.py: 411:State  : 15
-   yacc.py: 434:Stack  : ( . LexToken(>,'>',1,2)
-   yacc.py: 445:Action : Shift and goto state 42
+   yacc.py: 434:Stack  : ( . LexToken(DEFINE,'define',1,1)
+   yacc.py: 445:Action : Shift and goto state 30
    yacc.py: 410:
-   yacc.py: 411:State  : 42
-   yacc.py: 434:Stack  : ( > . LexToken(NUMBER,Number(value=1),1,4)
+   yacc.py: 411:State  : 30
+   yacc.py: 434:Stack  : ( DEFINE . LexToken(ID,'foo',1,8)
+   yacc.py: 445:Action : Shift and goto state 16
+   yacc.py: 410:
+   yacc.py: 411:State  : 16
+   yacc.py: 434:Stack  : ( DEFINE ID . LexToken((,'(',1,14)
+   yacc.py: 469:Action : Reduce rule [variable -> ID] with ['foo'] and goto state 49
+   yacc.py: 506:Result : <Variable @ 0x22e7c835ab0> (Variable(var_name='foo'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 49
+   yacc.py: 434:Stack  : ( DEFINE variable . LexToken((,'(',1,14)
+   yacc.py: 445:Action : Shift and goto state 50
+   yacc.py: 410:
+   yacc.py: 411:State  : 50
+   yacc.py: 434:Stack  : ( DEFINE variable ( . LexToken(FUN,'fun',1,15)
+   yacc.py: 445:Action : Shift and goto state 33
+   yacc.py: 410:
+   yacc.py: 411:State  : 33
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN . LexToken((,'(',1,19)
+   yacc.py: 445:Action : Shift and goto state 53
+   yacc.py: 410:
+   yacc.py: 411:State  : 53
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( . LexToken(ID,'f',1,20)
+   yacc.py: 445:Action : Shift and goto state 76
+   yacc.py: 410:
+   yacc.py: 411:State  : 76
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ID . LexToken(ID,'x',1,22)
+   yacc.py: 445:Action : Shift and goto state 76
+   yacc.py: 410:
+   yacc.py: 411:State  : 76
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ID ID . LexToken(),')',1,23)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 77
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 77
+   yacc.py: 430:Defaulted state 77: Reduce using 49
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ID ID empty . LexToken(),')',1,23)
+   yacc.py: 469:Action : Reduce rule [ids -> empty] with [None] and goto state 99
+   yacc.py: 506:Result : <list @ 0x22e7c859a40> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 99
+   yacc.py: 430:Defaulted state 99: Reduce using 48
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ID ID ids . LexToken(),')',1,23)
+   yacc.py: 469:Action : Reduce rule [ids -> ID ids] with ['x',[]] and goto state 99
+   yacc.py: 506:Result : <list @ 0x22e7c85b700> (['x'])
+   yacc.py: 410:
+   yacc.py: 411:State  : 99
+   yacc.py: 430:Defaulted state 99: Reduce using 48
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ID ids . LexToken(),')',1,23)
+   yacc.py: 469:Action : Reduce rule [ids -> ID ids] with ['f',['x']] and goto state 75
+   yacc.py: 506:Result : <list @ 0x22e7c859a40> (['f', 'x'])
+   yacc.py: 410:
+   yacc.py: 411:State  : 75
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ids . LexToken(),')',1,23)
+   yacc.py: 445:Action : Shift and goto state 98
+   yacc.py: 410:
+   yacc.py: 411:State  : 98
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN ( ids ) . LexToken((,'(',1,25)
+   yacc.py: 469:Action : Reduce rule [fun_ids -> ( ids )] with ['(',['f', 'x'],')'] and goto state 54
+   yacc.py: 506:Result : <FunIds @ 0x22e7c835cc0> (FunIds(fun_ids=['f', 'x']))
+   yacc.py: 410:
+   yacc.py: 411:State  : 54
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids . LexToken((,'(',1,25)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 80
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 80
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids empty . LexToken((,'(',1,25)
+   yacc.py: 469:Action : Reduce rule [def_stmts -> empty] with [None] and goto state 79
+   yacc.py: 506:Result : <list @ 0x22e7c85b700> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 79
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts . LexToken((,'(',1,25)
+   yacc.py: 445:Action : Shift and goto state 103
+   yacc.py: 410:
+   yacc.py: 411:State  : 103
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( . LexToken(ID,'f',1,26)
+   yacc.py: 445:Action : Shift and goto state 48
+   yacc.py: 410:
+   yacc.py: 411:State  : 48
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( ID . LexToken(ID,'x',1,28)
+   yacc.py: 469:Action : Reduce rule [fun_name -> ID] with ['f'] and goto state 35
+   yacc.py: 506:Result : <Variable @ 0x22e7c835d80> (Variable(var_name='f'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 35
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name . LexToken(ID,'x',1,28)
+   yacc.py: 445:Action : Shift and goto state 16
+   yacc.py: 410:
+   yacc.py: 411:State  : 16
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name ID . LexToken(),')',1,29)
+   yacc.py: 469:Action : Reduce rule [variable -> ID] with ['x'] and goto state 9
+   yacc.py: 506:Result : <Variable @ 0x22e7c835d50> (Variable(var_name='x'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 9
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name variable . LexToken(),')',1,29)
+   yacc.py: 469:Action : Reduce rule [exp -> variable] with [<Variable @ 0x22e7c835d50>] and goto state 58
+   yacc.py: 506:Result : <Variable @ 0x22e7c835d50> (Variable(var_name='x'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 58
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name exp . LexToken(),')',1,29)
+   yacc.py: 469:Action : Reduce rule [param -> exp] with [<Variable @ 0x22e7c835d50>] and goto state 56
+   yacc.py: 506:Result : <Variable @ 0x22e7c835d50> (Variable(var_name='x'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 56
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name param . LexToken(),')',1,29)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 57
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 57
+   yacc.py: 430:Defaulted state 57: Reduce using 53
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name param empty . LexToken(),')',1,29)
+   yacc.py: 469:Action : Reduce rule [params -> empty] with [None] and goto state 82
+   yacc.py: 506:Result : <list @ 0x22e7c859680> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 82
+   yacc.py: 430:Defaulted state 82: Reduce using 52
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name param params . LexToken(),')',1,29)
+   yacc.py: 469:Action : Reduce rule [params -> param params] with [<Variable @ 0x22e7c835d50>,[]] and goto state 59
+   yacc.py: 506:Result : <list @ 0x22e7c85b740> ([Variable(var_name='x')])
+   yacc.py: 410:
+   yacc.py: 411:State  : 59
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name params . LexToken(),')',1,29)
+   yacc.py: 445:Action : Shift and goto state 83
+   yacc.py: 410:
+   yacc.py: 411:State  : 83
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts ( fun_name params ) . LexToken(),')',1,30)
+   yacc.py: 469:Action : Reduce rule [fun_call -> ( fun_name params )] with ['(',<Variable @ 0x22e7c835d80>,<list @ 0x22e7c85b740>,')'] and goto state 13
+   yacc.py: 506:Result : <FunCall @ 0x22e7c835c90> (FunCall(fun_node=Variable(var_name='f'), ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 13
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts fun_call . LexToken(),')',1,30)
+   yacc.py: 469:Action : Reduce rule [exp -> fun_call] with [<FunCall @ 0x22e7c835c90>] and goto state 101
+   yacc.py: 506:Result : <FunCall @ 0x22e7c835c90> (FunCall(fun_node=Variable(var_name='f'), ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 101
+   yacc.py: 430:Defaulted state 101: Reduce using 46
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids def_stmts exp . LexToken(),')',1,30)
+   yacc.py: 469:Action : Reduce rule [fun_body -> def_stmts exp] with [[],<FunCall @ 0x22e7c835c90>] and goto state 78
+   yacc.py: 506:Result : <FunBody @ 0x22e7c835ed0> (FunBody(fun_body=[FunCall(fun_node=Varia ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 78
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids fun_body . LexToken(),')',1,30)
+   yacc.py: 445:Action : Shift and goto state 100
+   yacc.py: 410:
+   yacc.py: 411:State  : 100
+   yacc.py: 434:Stack  : ( DEFINE variable ( FUN fun_ids fun_body ) . LexToken(),')',1,31)
+   yacc.py: 469:Action : Reduce rule [fun_exp -> ( FUN fun_ids fun_body )] with ['(','fun',<FunIds @ 0x22e7c835cc0>,<FunBody @ 0x22e7c835ed0>,')'] and goto state 12
+   yacc.py: 506:Result : <FunExp @ 0x22e7c835ba0> (FunExp(fun_ids_node=FunIds(fun_ids=['f', ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 12
+   yacc.py: 434:Stack  : ( DEFINE variable fun_exp . LexToken(),')',1,31)
+   yacc.py: 469:Action : Reduce rule [exp -> fun_exp] with [<FunExp @ 0x22e7c835ba0>] and goto state 72
+   yacc.py: 506:Result : <FunExp @ 0x22e7c835ba0> (FunExp(fun_ids_node=FunIds(fun_ids=['f', ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 72
+   yacc.py: 434:Stack  : ( DEFINE variable exp . LexToken(),')',1,31)
+   yacc.py: 445:Action : Shift and goto state 97
+   yacc.py: 410:
+   yacc.py: 411:State  : 97
+   yacc.py: 434:Stack  : ( DEFINE variable exp ) . LexToken((,'(',1,34)
+   yacc.py: 469:Action : Reduce rule [def_stmt -> ( DEFINE variable exp )] with ['(','define',<Variable @ 0x22e7c835ab0>,<FunExp @ 0x22e7c835ba0>,')'] and goto state 5
+   yacc.py: 506:Result : <DefStmt @ 0x22e7c835db0> (DefStmt(variable_node=Variable(var_name= ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 5
+   yacc.py: 434:Stack  : def_stmt . LexToken((,'(',1,34)
+   yacc.py: 469:Action : Reduce rule [stmt -> def_stmt] with [<DefStmt @ 0x22e7c835db0>] and goto state 3
+   yacc.py: 506:Result : <DefStmt @ 0x22e7c835db0> (DefStmt(variable_node=Variable(var_name= ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 3
+   yacc.py: 434:Stack  : stmt . LexToken((,'(',1,34)
+   yacc.py: 445:Action : Shift and goto state 15
+   yacc.py: 410:
+   yacc.py: 411:State  : 15
+   yacc.py: 434:Stack  : stmt ( . LexToken(PRINT_NUM,'print-num',1,35)
+   yacc.py: 445:Action : Shift and goto state 31
+   yacc.py: 410:
+   yacc.py: 411:State  : 31
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM . LexToken((,'(',1,47)
+   yacc.py: 445:Action : Shift and goto state 50
+   yacc.py: 410:
+   yacc.py: 411:State  : 50
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( . LexToken(ID,'foo',1,48)
+   yacc.py: 445:Action : Shift and goto state 48
+   yacc.py: 410:
+   yacc.py: 411:State  : 48
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( ID . LexToken((,'(',1,52)
+   yacc.py: 469:Action : Reduce rule [fun_name -> ID] with ['foo'] and goto state 35
+   yacc.py: 506:Result : <Variable @ 0x22e7c835c60> (Variable(var_name='foo'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 35
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name . LexToken((,'(',1,52)
+   yacc.py: 445:Action : Shift and goto state 50
+   yacc.py: 410:
+   yacc.py: 411:State  : 50
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( . LexToken(FUN,'fun',1,53)
+   yacc.py: 445:Action : Shift and goto state 33
+   yacc.py: 410:
+   yacc.py: 411:State  : 33
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN . LexToken((,'(',1,57)
+   yacc.py: 445:Action : Shift and goto state 53
+   yacc.py: 410:
+   yacc.py: 411:State  : 53
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( . LexToken(ID,'x',1,58)
+   yacc.py: 445:Action : Shift and goto state 76
+   yacc.py: 410:
+   yacc.py: 411:State  : 76
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( ID . LexToken(),')',1,59)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 77
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 77
+   yacc.py: 430:Defaulted state 77: Reduce using 49
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( ID empty . LexToken(),')',1,59)
+   yacc.py: 469:Action : Reduce rule [ids -> empty] with [None] and goto state 99
+   yacc.py: 506:Result : <list @ 0x22e7c8596c0> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 99
+   yacc.py: 430:Defaulted state 99: Reduce using 48
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( ID ids . LexToken(),')',1,59)
+   yacc.py: 469:Action : Reduce rule [ids -> ID ids] with ['x',[]] and goto state 75
+   yacc.py: 506:Result : <list @ 0x22e7c85b240> (['x'])
+   yacc.py: 410:
+   yacc.py: 411:State  : 75
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( ids . LexToken(),')',1,59)
+   yacc.py: 445:Action : Shift and goto state 98
+   yacc.py: 410:
+   yacc.py: 411:State  : 98
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN ( ids ) . LexToken((,'(',1,61)
+   yacc.py: 469:Action : Reduce rule [fun_ids -> ( ids )] with ['(',['x'],')'] and goto state 54
+   yacc.py: 506:Result : <FunIds @ 0x22e7c835ae0> (FunIds(fun_ids=['x']))
+   yacc.py: 410:
+   yacc.py: 411:State  : 54
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids . LexToken((,'(',1,61)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 80
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 80
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids empty . LexToken((,'(',1,61)
+   yacc.py: 469:Action : Reduce rule [def_stmts -> empty] with [None] and goto state 79
+   yacc.py: 506:Result : <list @ 0x22e7c8596c0> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 79
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts . LexToken((,'(',1,61)
+   yacc.py: 445:Action : Shift and goto state 103
+   yacc.py: 410:
+   yacc.py: 411:State  : 103
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( . LexToken(-,'-',1,62)
+   yacc.py: 445:Action : Shift and goto state 38
+   yacc.py: 410:
+   yacc.py: 411:State  : 38
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - . LexToken(ID,'x',1,64)
+   yacc.py: 445:Action : Shift and goto state 16
+   yacc.py: 410:
+   yacc.py: 411:State  : 16
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - ID . LexToken(NUMBER,Number(value=1),1,66)
+   yacc.py: 469:Action : Reduce rule [variable -> ID] with ['x'] and goto state 9
+   yacc.py: 506:Result : <Variable @ 0x22e7c836020> (Variable(var_name='x'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 9
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - variable . LexToken(NUMBER,Number(value=1),1,66)
+   yacc.py: 469:Action : Reduce rule [exp -> variable] with [<Variable @ 0x22e7c836020>] and goto state 62
+   yacc.py: 506:Result : <Variable @ 0x22e7c836020> (Variable(var_name='x'))
+   yacc.py: 410:
+   yacc.py: 411:State  : 62
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - exp . LexToken(NUMBER,Number(value=1),1,66)
    yacc.py: 445:Action : Shift and goto state 8
    yacc.py: 410:
    yacc.py: 411:State  : 8
-   yacc.py: 434:Stack  : ( > NUMBER . LexToken(BOOL_VAL,Boolean(value=True),1,6)
-   yacc.py: 469:Action : Reduce rule [exp -> NUMBER] with [Number(value=1)] and goto state 66
-   yacc.py: 506:Result : <Number @ 0x1ff9d1f99f0> (Number(value=1))
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - exp NUMBER . LexToken(),')',1,67)
+   yacc.py: 469:Action : Reduce rule [exp -> NUMBER] with [Number(value=1)] and goto state 87
+   yacc.py: 506:Result : <Number @ 0x22e7c836170> (Number(value=1))
    yacc.py: 410:
-   yacc.py: 411:State  : 66
-   yacc.py: 434:Stack  : ( > exp . LexToken(BOOL_VAL,Boolean(value=True),1,6)
-   yacc.py: 445:Action : Shift and goto state 7
+   yacc.py: 411:State  : 87
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - exp exp . LexToken(),')',1,67)
+   yacc.py: 445:Action : Shift and goto state 107
    yacc.py: 410:
-   yacc.py: 411:State  : 7
-   yacc.py: 434:Stack  : ( > exp BOOL_VAL . LexToken(),')',1,8)
-   yacc.py: 469:Action : Reduce rule [exp -> BOOL_VAL] with [<Boolean @ 0x1ff9d1f9930>] and goto state 91
-   yacc.py: 506:Result : <Boolean @ 0x1ff9d1f9930> (Boolean(value=True))
+   yacc.py: 411:State  : 107
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts ( - exp exp ) . LexToken(),')',1,68)
+   yacc.py: 469:Action : Reduce rule [minus -> ( - exp exp )] with ['(','-',<Variable @ 0x22e7c836020>,Number(value=1),')'] and goto state 18
+   yacc.py: 506:Result : <NumOp @ 0x22e7c8361d0> (NumOp(operator='-', operands=[Variable(v ...)
    yacc.py: 410:
-   yacc.py: 411:State  : 91
-   yacc.py: 434:Stack  : ( > exp exp . LexToken(),')',1,8)
-   yacc.py: 445:Action : Shift and goto state 111
-   yacc.py: 410:
-   yacc.py: 411:State  : 111
-   yacc.py: 434:Stack  : ( > exp exp ) . $end
-   yacc.py: 469:Action : Reduce rule [greater -> ( > exp exp )] with ['(','>',Number(value=1),<Boolean @ 0x1ff9d1f9930>,')'] and goto state 22
-   yacc.py: 506:Result : <NumOp @ 0x1ff9d1f9c60> (NumOp(operator='>', operands=[Number(val ...)
-   yacc.py: 410:
-   yacc.py: 411:State  : 22
-   yacc.py: 434:Stack  : greater . $end
-   yacc.py: 469:Action : Reduce rule [num_op -> greater] with [<NumOp @ 0x1ff9d1f9c60>] and goto state 10
-   yacc.py: 506:Result : <NumOp @ 0x1ff9d1f9c60> (NumOp(operator='>', operands=[Number(val ...)
+   yacc.py: 411:State  : 18
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts minus . LexToken(),')',1,68)
+   yacc.py: 469:Action : Reduce rule [num_op -> minus] with [<NumOp @ 0x22e7c8361d0>] and goto state 10
+   yacc.py: 506:Result : <NumOp @ 0x22e7c8361d0> (NumOp(operator='-', operands=[Variable(v ...)
    yacc.py: 410:
    yacc.py: 411:State  : 10
-   yacc.py: 434:Stack  : num_op . $end
-   yacc.py: 469:Action : Reduce rule [exp -> num_op] with [<NumOp @ 0x1ff9d1f9c60>] and goto state 4
-   yacc.py: 506:Result : <NumOp @ 0x1ff9d1f9c60> (NumOp(operator='>', operands=[Number(val ...)
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts num_op . LexToken(),')',1,68)
+   yacc.py: 469:Action : Reduce rule [exp -> num_op] with [<NumOp @ 0x22e7c8361d0>] and goto state 101
+   yacc.py: 506:Result : <NumOp @ 0x22e7c8361d0> (NumOp(operator='-', operands=[Variable(v ...)
    yacc.py: 410:
-   yacc.py: 411:State  : 4
-   yacc.py: 434:Stack  : exp . $end
-   yacc.py: 469:Action : Reduce rule [stmt -> exp] with [<NumOp @ 0x1ff9d1f9c60>] and goto state 3
-   yacc.py: 506:Result : <NumOp @ 0x1ff9d1f9c60> (NumOp(operator='>', operands=[Number(val ...)
+   yacc.py: 411:State  : 101
+   yacc.py: 430:Defaulted state 101: Reduce using 46
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids def_stmts exp . LexToken(),')',1,68)
+   yacc.py: 469:Action : Reduce rule [fun_body -> def_stmts exp] with [[],<NumOp @ 0x22e7c8361d0>] and goto state 78
+   yacc.py: 506:Result : <FunBody @ 0x22e7c836290> (FunBody(fun_body=[NumOp(operator='-', op ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 78
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids fun_body . LexToken(),')',1,68)
+   yacc.py: 445:Action : Shift and goto state 100
+   yacc.py: 410:
+   yacc.py: 411:State  : 100
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name ( FUN fun_ids fun_body ) . LexToken(NUMBER,Number(value=10),1,70)
+   yacc.py: 469:Action : Reduce rule [fun_exp -> ( FUN fun_ids fun_body )] with ['(','fun',<FunIds @ 0x22e7c835ae0>,<FunBody @ 0x22e7c836290>,')'] and goto state 12
+   yacc.py: 506:Result : <FunExp @ 0x22e7c835e70> (FunExp(fun_ids_node=FunIds(fun_ids=['x'] ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 12
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name fun_exp . LexToken(NUMBER,Number(value=10),1,70)
+   yacc.py: 469:Action : Reduce rule [exp -> fun_exp] with [<FunExp @ 0x22e7c835e70>] and goto state 58
+   yacc.py: 506:Result : <FunExp @ 0x22e7c835e70> (FunExp(fun_ids_node=FunIds(fun_ids=['x'] ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 58
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name exp . LexToken(NUMBER,Number(value=10),1,70)
+   yacc.py: 469:Action : Reduce rule [param -> exp] with [<FunExp @ 0x22e7c835e70>] and goto state 56
+   yacc.py: 506:Result : <FunExp @ 0x22e7c835e70> (FunExp(fun_ids_node=FunIds(fun_ids=['x'] ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 56
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param . LexToken(NUMBER,Number(value=10),1,70)
+   yacc.py: 445:Action : Shift and goto state 8
+   yacc.py: 410:
+   yacc.py: 411:State  : 8
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param NUMBER . LexToken(),')',1,72)
+   yacc.py: 469:Action : Reduce rule [exp -> NUMBER] with [<Number @ 0x22e7c836380>] and goto state 58
+   yacc.py: 506:Result : <Number @ 0x22e7c836380> (Number(value=10))
+   yacc.py: 410:
+   yacc.py: 411:State  : 58
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param exp . LexToken(),')',1,72)
+   yacc.py: 469:Action : Reduce rule [param -> exp] with [<Number @ 0x22e7c836380>] and goto state 56
+   yacc.py: 506:Result : <Number @ 0x22e7c836380> (Number(value=10))
+   yacc.py: 410:
+   yacc.py: 411:State  : 56
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param param . LexToken(),')',1,72)
+   yacc.py: 473:Action : Reduce rule [empty -> <empty>] with [] and goto state 57
+   yacc.py: 548:Result : <NoneType @ 0x7ffa09b4a7f8> (None)
+   yacc.py: 410:
+   yacc.py: 411:State  : 57
+   yacc.py: 430:Defaulted state 57: Reduce using 53
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param param empty . LexToken(),')',1,72)
+   yacc.py: 469:Action : Reduce rule [params -> empty] with [None] and goto state 82
+   yacc.py: 506:Result : <list @ 0x22e7c85aa00> ([])
+   yacc.py: 410:
+   yacc.py: 411:State  : 82
+   yacc.py: 430:Defaulted state 82: Reduce using 52
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param param params . LexToken(),')',1,72)
+   yacc.py: 469:Action : Reduce rule [params -> param params] with [<Number @ 0x22e7c836380>,[]] and goto state 82
+   yacc.py: 506:Result : <list @ 0x22e7c85b700> ([Number(value=10)])
+   yacc.py: 410:
+   yacc.py: 411:State  : 82
+   yacc.py: 430:Defaulted state 82: Reduce using 52
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name param params . LexToken(),')',1,72)
+   yacc.py: 469:Action : Reduce rule [params -> param params] with [<FunExp @ 0x22e7c835e70>,<list @ 0x22e7c85b700>] and goto state 59
+   yacc.py: 506:Result : <list @ 0x22e7c85aa00> ([FunExp(fun_ids_node=FunIds(fun_ids=['x' ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 59
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name params . LexToken(),')',1,72)
+   yacc.py: 445:Action : Shift and goto state 83
+   yacc.py: 410:
+   yacc.py: 411:State  : 83
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM ( fun_name params ) . LexToken(),')',1,73)
+   yacc.py: 469:Action : Reduce rule [fun_call -> ( fun_name params )] with ['(',<Variable @ 0x22e7c835c60>,<list @ 0x22e7c85aa00>,')'] and goto state 13
+   yacc.py: 506:Result : <FunCall @ 0x22e7c836470> (FunCall(fun_node=Variable(var_name='foo' ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 13
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM fun_call . LexToken(),')',1,73)
+   yacc.py: 469:Action : Reduce rule [exp -> fun_call] with [<FunCall @ 0x22e7c836470>] and goto state 51
+   yacc.py: 506:Result : <FunCall @ 0x22e7c836470> (FunCall(fun_node=Variable(var_name='foo' ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 51
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM exp . LexToken(),')',1,73)
+   yacc.py: 445:Action : Shift and goto state 73
+   yacc.py: 410:
+   yacc.py: 411:State  : 73
+   yacc.py: 434:Stack  : stmt ( PRINT_NUM exp ) . $end
+   yacc.py: 469:Action : Reduce rule [print_stmt -> ( PRINT_NUM exp )] with ['(','print-num',<FunCall @ 0x22e7c836470>,')'] and goto state 6
+   yacc.py: 506:Result : <Print @ 0x22e7c835ea0> (Print(exp=FunCall(fun_node=Variable(var_ ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 6
+   yacc.py: 434:Stack  : stmt print_stmt . $end
+   yacc.py: 469:Action : Reduce rule [stmt -> print_stmt] with [<Print @ 0x22e7c835ea0>] and goto state 3
+   yacc.py: 506:Result : <Print @ 0x22e7c835ea0> (Print(exp=FunCall(fun_node=Variable(var_ ...)
    yacc.py: 410:
    yacc.py: 411:State  : 3
-   yacc.py: 434:Stack  : stmt . $end
-   yacc.py: 469:Action : Reduce rule [stmts -> stmt] with [<NumOp @ 0x1ff9d1f9c60>] and goto state 2
-   yacc.py: 506:Result : <list @ 0x1ff9d21b080> ([NumOp(operator='>', operands=[Number(va ...)
+   yacc.py: 434:Stack  : stmt stmt . $end
+   yacc.py: 469:Action : Reduce rule [stmts -> stmt] with [<Print @ 0x22e7c835ea0>] and goto state 28
+   yacc.py: 506:Result : <list @ 0x22e7c84fdc0> ([Print(exp=FunCall(fun_node=Variable(var ...)
+   yacc.py: 410:
+   yacc.py: 411:State  : 28
+   yacc.py: 430:Defaulted state 28: Reduce using 3
+   yacc.py: 434:Stack  : stmt stmts . $end
+   yacc.py: 469:Action : Reduce rule [stmts -> stmt stmts] with [<DefStmt @ 0x22e7c835db0>,<list @ 0x22e7c84fdc0>] and goto state 2
+   yacc.py: 506:Result : <list @ 0x22e7c8596c0> ([DefStmt(variable_node=Variable(var_name ...)
    yacc.py: 410:
    yacc.py: 411:State  : 2
    yacc.py: 430:Defaulted state 2: Reduce using 2
    yacc.py: 434:Stack  : stmts . $end
-   yacc.py: 469:Action : Reduce rule [program -> stmts] with [<list @ 0x1ff9d21b080>] and goto state 1
-   yacc.py: 506:Result : <Program @ 0x1ff9d1f92a0> (Program(stmts=[NumOp(operator='>', opera ...)
+   yacc.py: 469:Action : Reduce rule [program -> stmts] with [<list @ 0x22e7c8596c0>] and goto state 1
+   yacc.py: 506:Result : <Program @ 0x22e7c836110> (Program(stmts=[DefStmt(variable_node=Var ...)
    yacc.py: 410:
    yacc.py: 411:State  : 1
    yacc.py: 434:Stack  : program . $end
-   yacc.py: 571:Done   : Returning <Program @ 0x1ff9d1f92a0> (Program(stmts=[NumOp(operator='>', opera ...)
+   yacc.py: 571:Done   : Returning <Program @ 0x22e7c836110> (Program(stmts=[DefStmt(variable_node=Var ...)
    yacc.py: 572:PLY: PARSE DEBUG END

@@ -24,6 +24,8 @@ class Env:
             raise EvalError(f"Undefined variable '{var_name}'")
         
     def set(self, var_name, var_value):
+        if var_name in self.variables:
+            raise EvalError(f"Variable '{var_name}' is already defined and cannot be redefined.")
         self.variables[var_name] = var_value
         
     def extend(self, new_vars:dict = None):

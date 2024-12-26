@@ -1,5 +1,5 @@
 from utils.my_yacc import parse_input
-from utils.my_visitor import EvalError
+from utils.my_visitor import *
 import argparse
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse and evaluate input file.')
@@ -8,10 +8,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.filename:
+        visitor = Visitor()
         try:
             with open(args.filename, 'r') as f:
                 content = f.read()
-            parse_input(content)
+            parse_input(content, visitor=visitor)
         except FileNotFoundError:
             print(f"Error: File '{args.filename}' not found.")
         except SyntaxError as e:
@@ -22,6 +23,7 @@ if __name__ == "__main__":
             print(f"An unexpected error occurred while processing '{args.filename}': {e}")
     else:
         # Interactive mode
+        visitor = Visitor()
         while True:
             try:
                 s = input('input: ')
@@ -30,4 +32,4 @@ if __name__ == "__main__":
                 break
             if not s.strip():
                 continue
-            parse_input(s)
+            parse_input(s, visitor=visitor)
