@@ -1,6 +1,8 @@
 ### 🚀 How This Program Works
 ![alt text](image.png)
-
+1. Use `my_lex.py` to perform lexical analysis.
+2. Use `my_yacc.py` to construct the AST. The definition of an AST node can be found in `my_ast.py` 
+3. Use `Visotor` class to iterate throuth each node in AST and perform the correspoding action. (see `my_visitor.py` for more details.)
 
 
 ### 🛠️ How to Run the Main Program
