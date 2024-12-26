@@ -12,3 +12,4 @@ wheels/
 .python-version
 pyproject.toml
 parsetab.py
+*.zip
