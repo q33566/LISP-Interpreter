@@ -29,3 +29,17 @@ You can also provide an input file to main.py.
 ### 🌐 Environment
 - python 3.10.11
 - Windows 11
+
+
+### 📝 Completed Features
+- [x] Syntax Validation
+- [x] Print
+- [x] Logical Operations
+- [x] if Expression
+- [x] Variable Definition
+- [x] Function
+- [x] Named Function
+- [x] Recursion
+- [x] Type Checking
+- [x] Nested Function
+- [x] First-class Function
