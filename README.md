@@ -6,19 +6,37 @@
 
 
 ### 🛠️ How to Run the Main Program
-1. `pip install -r requirements.txt`
-2. `cd src`
-3. `py main.py`
+1. Install [uv](https://github.com/astral-sh/uv) as the package manager:  
+   ```bash
+   pip install uv
+   ```
 
-You can also provide an input file to main.py.
+2. Navigate to the `src` directory:  
+   ```bash
+   cd src
+   ```
 
-    $ py main.py example.lsp
+3. Execute the main program:  
+   ```bash
+   uv run python main.py
+   ```
+
+4. To run with an input file, specify the file path:  
+   ```bash
+   uv run python main.py example.lsp
+   ```
 
 ### 🧪 How to Run Test Cases
-1. `pip install -r requirements.txt`
-2. `cd src`
-3. `cd test`
-4. `pytest test.py`
+
+1. Navigate to the `test` directory:  
+   ```bash
+   cd test
+   ```
+
+2. Run the test script using `pytest`:  
+   ```bash
+   uv run pytest test.py
+   ```
 
 
 *To add custom test cases:*
@@ -27,7 +45,7 @@ You can also provide an input file to main.py.
 - Ensure that each input file has a corresponding output file with the same filename (e.g., test1.input and test1.output).
 
 ### 🌐 Environment
-- python 3.10.11
+- python 3.11
 - Windows 11
 
 
