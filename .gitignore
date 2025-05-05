@@ -13,3 +13,5 @@ wheels/
 pyproject.toml
 parsetab.py
 *.zip
+
+parselog.txt
