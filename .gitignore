@@ -5,13 +5,12 @@ build/
 dist/
 wheels/
 *.egg-info
-
+.pytest_cache/
+.ruff_cache/
 # Virtual environments
 .venv
-.pytest_cache
-.python-version
-pyproject.toml
-parsetab.py
-*.zip
+.env
+
 
 parselog.txt
+parsetab.py
