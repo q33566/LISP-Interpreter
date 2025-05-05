@@ -21,7 +21,21 @@
    uv run python main.py
    ```
 
-4. To run with an input file, specify the file path:  
+   During execution, the terminal will prompt for input:
+   ```bash
+   input:
+   ```
+
+   For example, given the following input:
+   ```bash
+   input: (print-num (mod 10 4))
+   ```
+
+   The output will be:
+   ```bash
+   2
+   ```
+1. To run with an input file, specify the file path:  
    ```bash
    uv run python main.py example.lsp
    ```
